@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="navy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#061229">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    /* ===================== THEMES ===================== */
+    :root, [data-theme="navy"] {
+      --bg: #061229;
+      --bg-grad: radial-gradient(900px 520px at 50% -160px, #1b3c7a 0%, #0c2148 42%, #061229 100%);
+      --surface: #0c1f45;
+      --surface-2: #12295a;
+      --surface-3: #183369;
+      --text: #f6eedb;
+      --muted: #9fb0d0;
+      --track: rgba(255,255,255,.09);
+      --line-soft: rgba(212,175,55,.22);
+      --shadow: 0 14px 34px rgba(0,0,0,.38);
+      --header: linear-gradient(180deg, #0f2a5e 0%, #0a1d42 100%);
+    }
+    [data-theme="black"] {
+      --bg: #060606;
+      --bg-grad: radial-gradient(900px 520px at 50% -160px, #2a241a 0%, #121110 45%, #060606 100%);
+      --surface: #121212;
+      --surface-2: #1a1917;
+      --surface-3: #24221e;
+      --text: #f5ecd6;
+      --muted: #a39b88;
+      --track: rgba(255,255,255,.08);
+      --line-soft: rgba(212,175,55,.2);
+      --shadow: 0 14px 34px rgba(0,0,0,.6);
+      --header: linear-gradient(180deg, #1b1915 0%, #0d0c0b 100%);
+    }
+    :root {
+      --gold: #d4af37;
+      --gold-hi: #f6e09a;
+      --gold-lo: #9c7a22;
+      --gold-grad: linear-gradient(135deg, #f8e7a8 0%, #d9b54a 38%, #b08a2c 70%, #f1d27a 100%);
+      --gold-text: linear-gradient(180deg, #fbeab0 0%, #e2bf55 55%, #b88f2c 100%);
+      --inc: #5cd6a1;
+      --exp: #ff8f7e;
+      --danger: #e5534b;
+      --r: 20px;
+      --tabbar-h: 74px;
+    }
+
+    /* ===================== BASE ===================== */
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      background-image: var(--bg-grad);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: "Sarabun", "Prompt", system-ui, sans-serif;
+      font-size: 15px;
+      min-height: 100vh;
+      transition: background .35s ease;
+    }
+    .num, h1, h2, h3, .prompt { font-family: "Prompt", "Sarabun", sans-serif; font-variant-numeric: tabular-nums; }
+    button { font-family: inherit; color: inherit; cursor: pointer; }
+    .app { max-width: 480px; margin: 0 auto; padding-bottom: calc(var(--tabbar-h) + 28px + env(safe-area-inset-bottom)); }
+
+    .gold-text {
+      background: var(--gold-text);
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+    }
+
+    /* ===================== HEADER ===================== */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: var(--header);
+      border-bottom: 1px solid var(--line-soft);
+      padding: 14px 16px 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    }
+    .topbar::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .8;
+    }
+    .topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .monogram {
+      width: 40px; height: 40px; border-radius: 50%; flex: none;
+      display: grid; place-items: center;
+      background: radial-gradient(circle at 30% 25%, var(--surface-3), var(--surface));
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.12), inset 0 0 10px rgba(212,175,55,.2);
+      font-family: "Prompt"; font-weight: 600; font-size: 19px;
+    }
+    .brand-title { font-family: "Prompt"; font-weight: 600; font-size: 17px; line-height: 1.15; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-sub { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .month-switch {
+      display: flex; align-items: center; gap: 2px; flex: none;
+      border: 1px solid var(--line-soft); border-radius: 999px; padding: 3px;
+      background: rgba(0,0,0,.18);
+    }
+    .month-switch button {
+      width: 30px; height: 30px; border-radius: 50%; border: 0; background: transparent;
+      display: grid; place-items: center; color: var(--gold);
+    }
+    .month-switch button:active { background: rgba(212,175,55,.15); }
+    .month-switch button:disabled { opacity: .3; }
+    .month-label { font-family: "Prompt"; font-size: 13.5px; font-weight: 500; min-width: 64px; text-align: center; }
+
+    /* ===================== LAYOUT ===================== */
+    main { padding: 16px 14px 0; }
+    .page { display: none; animation: fade .35s ease; }
+    .page.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .card {
+      position: relative;
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      border: 1px solid var(--line-soft);
+      border-radius: var(--r);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .card.lux {
+      border: 1.5px solid transparent;
+      background:
+        linear-gradient(160deg, var(--surface-3), var(--surface)) padding-box,
+        var(--gold-grad) border-box;
+    }
+    .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .card-title { font-family: "Prompt"; font-weight: 500; font-size: 15.5px; display: flex; align-items: center; gap: 8px; }
+    .card-title::before {
+      content: ""; width: 4px; height: 16px; border-radius: 2px; background: var(--gold-grad);
+    }
+    .link-btn { border: 0; background: none; color: var(--gold); font-size: 13px; padding: 4px 2px; }
+
+    /* ===================== BALANCE ===================== */
+    .bal-label { color: var(--muted); font-size: 13.5px; display: flex; justify-content: space-between; }
+    .bal-amount { font-family: "Prompt"; font-weight: 600; font-size: 38px; line-height: 1.15; margin: 2px 0 14px; letter-spacing: .3px; }
+    .bal-amount small { font-size: 18px; font-weight: 500; margin-right: 4px; }
+    .bal-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line-soft); padding-top: 12px; }
+    .bal-grid > div + div { border-left: 1px solid var(--line-soft); padding-left: 14px; }
+    .bal-k { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .bal-v { font-family: "Prompt"; font-size: 21px; font-weight: 500; margin-top: 2px; }
+    .shine { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
+    .shine::before {
+      content: ""; position: absolute; top: -40%; right: -30%; width: 70%; height: 140%;
+      background: radial-gradient(closest-side, rgba(246,224,154,.13), transparent);
+    }
+
+    /* ===================== GAUGE ===================== */
+    .gauge-wrap { position: relative; width: 100%; max-width: 280px; margin: 0 auto; }
+    .gauge-wrap svg { width: 100%; height: auto; display: block; }
+    .gauge-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 8%; }
+    .gauge-center .lbl { font-family: "Prompt"; font-size: 15px; }
+    .gauge-center .big { font-family: "Prompt"; font-weight: 600; font-size: 46px; line-height: 1.1; }
+    .gauge-center .sub { font-size: 13px; color: var(--muted); }
+    .target-pill {
+      display: flex; align-items: center; gap: 10px; margin: -18px auto 4px; width: max-content;
+      background: rgba(0,0,0,.35); border: 1px solid var(--gold); border-radius: 999px;
+      padding: 7px 8px 7px 16px; position: relative;
+    }
+    .target-pill .t { font-size: 13px; color: var(--muted); }
+    .target-pill .v { font-family: "Prompt"; font-weight: 600; font-size: 18px; color: var(--gold-hi); }
+    .target-pill button { border: 0; background: var(--gold-grad); color: #1a1406; border-radius: 999px; font-size: 12px; padding: 4px 10px; font-weight: 600; }
+    .seg-tabs { display: flex; gap: 8px; margin-bottom: 4px; }
+
+    /* health */
+    .health-row { display: flex; align-items: stretch; margin-top: 4px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line-soft); }
+    .health-row .lv { flex: 1; padding: 10px 14px; }
+    .health-row .lv small { color: var(--muted); font-size: 12px; display: block; }
+    .health-row .lv b { font-family: "Prompt"; font-size: 26px; font-weight: 600; }
+    .health-row .sc { background: var(--gold-grad); color: #1a1406; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-family: "Prompt"; }
+    .health-row .sc b { font-size: 30px; }
+    .health-row .sc span { opacity: .7; border-left: 1.5px solid rgba(26,20,6,.4); padding-left: 8px; }
+    .health-note { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
+    /* ===================== SEGMENTED ===================== */
+    .seg { display: flex; background: rgba(0,0,0,.25); border: 1px solid var(--line-soft); border-radius: 14px; padding: 4px; gap: 4px; }
+    .seg button { flex: 1; border: 0; background: transparent; padding: 9px 6px; border-radius: 10px; font-family: "Prompt"; font-size: 14px; color: var(--muted); transition: .2s; }
+    .seg button.on { background: var(--gold-grad); color: #1a1406; font-weight: 600; box-shadow: 0 4px 12px rgba(212,175,55,.25); }
+
+    /* ===================== DONUT ===================== */
+    .donut-box { position: relative; width: 100%; max-width: 320px; aspect-ratio: 1; margin: 6px auto 4px; }
+    .donut-box svg { width: 100%; height: 100%; display: block; }
+    .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+    .donut-center .lbl { color: var(--muted); font-size: 13.5px; }
+    .donut-center .big { font-family: "Prompt"; font-size: 24px; font-weight: 600; }
+    .bubble {
+      position: absolute; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 18px;
+      background: var(--surface-2); border: 2px solid var(--c, var(--gold));
+      box-shadow: 0 4px 12px rgba(0,0,0,.4);
+    }
+    .seg-pct { font-family: "Prompt"; font-size: 11px; font-weight: 600; fill: #fff; paint-order: stroke; stroke: rgba(0,0,0,.35); stroke-width: 2px; }
+
+    /* ===================== CATEGORY LIST ===================== */
+    .cat-row { display: flex; align-items: center; gap: 12px; padding: 10px 2px; }
+    .cat-row + .cat-row { border-top: 1px solid var(--line-soft); }
+    .emo {
+      width: 42px; height: 42px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 20px;
+      background: radial-gradient(circle at 30% 25%, var(--surface-3), var(--surface));
+      border: 1.5px solid var(--c, var(--gold));
+    }
+    .cat-main { flex: 1; min-width: 0; }
+    .cat-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+    .cat-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+    .cat-amt { font-family: "Prompt"; font-weight: 500; white-space: nowrap; }
+    .bar { height: 6px; border-radius: 99px; background: var(--track); margin-top: 7px; overflow: hidden; }
+    .bar > i { display: block; height: 100%; border-radius: 99px; background: var(--c, var(--gold)); }
+    .cat-pct { font-family: "Prompt"; font-size: 12.5px; color: var(--muted); width: 44px; text-align: right; flex: none; }
+
+    /* ===================== TX LIST ===================== */
+    .day-head { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; padding: 14px 4px 6px; font-family: "Prompt"; }
+    .day-head b { color: var(--gold-hi); font-weight: 500; }
+    .tx { display: flex; align-items: center; gap: 12px; padding: 11px 12px; }
+    .tx-list { padding: 4px; }
+    .tx + .tx { border-top: 1px solid var(--line-soft); }
+    .tx .emo { width: 40px; height: 40px; font-size: 18px; }
+    .tx-main { flex: 1; min-width: 0; }
+    .tx-cat { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-note { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tx-amt { font-family: "Prompt"; font-weight: 500; white-space: nowrap; text-align: right; }
+    .tx-amt.inc { color: var(--inc); }
+    .tx-amt.exp { color: var(--exp); }
+    .tx-amt small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+    .tx.clickable:active { background: rgba(212,175,55,.06); }
+    .empty { text-align: center; color: var(--muted); padding: 26px 10px; font-size: 14px; }
+    .empty .ic { font-size: 34px; display: block; margin-bottom: 6px; opacity: .8; }
+
+    /* ===================== TABBAR ===================== */
+    .tabbar {
+      position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; z-index: 30;
+      width: 100%; max-width: 480px;
+      height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      background: var(--header);
+      border-top: 1px solid var(--line-soft);
+      display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
+      box-shadow: 0 -8px 24px rgba(0,0,0,.35);
+    }
+    .tabbar::before {
+      content: ""; position: absolute; top: -1px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: .7;
+    }
+    .tab { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: var(--muted); font-family: "Prompt"; padding: 6px 0; }
+    .tab svg { width: 24px; height: 24px; }
+    .tab.on { color: var(--gold-hi); }
+    .tab.on svg { filter: drop-shadow(0 0 6px rgba(212,175,55,.5)); }
+    .fab-slot { display: flex; justify-content: center; }
+    .fab {
+      width: 62px; height: 62px; border-radius: 50%; border: 0; margin-top: -30px;
+      background: var(--gold-grad); color: #1a1406;
+      box-shadow: 0 0 0 5px var(--bg), 0 10px 24px rgba(212,175,55,.35);
+      display: grid; place-items: center;
+    }
+    .fab svg { width: 30px; height: 30px; }
+    .fab:active { transform: scale(.95); }
+
+    /* ===================== SHEET (ADD) ===================== */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(3px); z-index: 50; opacity: 0; pointer-events: none; transition: .25s; }
+    .overlay.show { opacity: 1; pointer-events: auto; }
+    .sheet {
+      position: fixed; left: 50%; bottom: 0; z-index: 60; width: 100%; max-width: 480px;
+      transform: translate(-50%, 105%); transition: transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s .32s; visibility: hidden;
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      border-top: 1.5px solid var(--gold); border-radius: 26px 26px 0 0;
+      padding: 10px 16px calc(18px + env(safe-area-inset-bottom));
+      max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 -12px 40px rgba(0,0,0,.5);
+    }
+    .sheet.show { transform: translate(-50%, 0); visibility: visible; transition: transform .32s cubic-bezier(.2,.8,.2,1); }
+    .grabber { width: 44px; height: 5px; border-radius: 9px; background: var(--line-soft); margin: 0 auto 10px; }
+    .sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .sheet-head h3 { margin: 0; font-weight: 600; font-size: 18px; }
+    .x-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-soft); background: transparent; color: var(--muted); font-size: 18px; }
+
+    .amount-box { text-align: center; margin: 14px 0 6px; padding: 10px 0 14px; border-bottom: 1px solid var(--line-soft); }
+    .amount-box .lbl { color: var(--muted); font-size: 13px; }
+    .amount-input { display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+    .amount-input span { font-family: "Prompt"; font-size: 26px; color: var(--gold); }
+    .amount-input input {
+      width: 75%; background: transparent; border: 0; outline: none; text-align: center;
+      font-family: "Prompt"; font-weight: 600; font-size: 44px; color: var(--text); padding: 0;
+    }
+    .amount-input input::placeholder { color: rgba(255,255,255,.18); }
+    .field-label { font-family: "Prompt"; font-size: 13.5px; color: var(--muted); margin: 14px 0 8px; display: block; }
+    .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 6px; }
+    .chip { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 2px; font-size: 11.5px; color: var(--muted); line-height: 1.25; text-align: center; }
+    .chip .emo { width: 50px; height: 50px; font-size: 22px; border-color: var(--line-soft); transition: .2s; }
+    .chip.on { color: var(--gold-hi); }
+    .chip.on .emo { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.2), 0 0 14px rgba(212,175,55,.35); background: radial-gradient(circle at 30% 25%, #3a3220, var(--surface)); }
+    .input {
+      width: 100%; height: 48px; border-radius: 14px; padding: 0 14px;
+      background: rgba(0,0,0,.25); border: 1px solid var(--line-soft); color: var(--text);
+      font-family: inherit; font-size: 15px; outline: none; transition: .2s;
+    }
+    .input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
+    input[type="date"].input { color-scheme: dark; }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .btn-gold {
+      width: 100%; height: 52px; border: 0; border-radius: 15px; margin-top: 18px;
+      background: var(--gold-grad); color: #1a1406; font-family: "Prompt"; font-weight: 600; font-size: 16px;
+      box-shadow: 0 8px 20px rgba(212,175,55,.25); letter-spacing: .3px;
+    }
+    .btn-gold:disabled { opacity: .6; }
+    .btn-outline {
+      width: 100%; height: 48px; border-radius: 14px; border: 1px dashed var(--gold); background: rgba(212,175,55,.06);
+      color: var(--gold-hi); font-family: "Prompt"; font-size: 14.5px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-outline svg { width: 20px; height: 20px; }
+
+    /* ===================== SETTINGS ===================== */
+    .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .theme-card { border: 1.5px solid var(--line-soft); background: none; border-radius: 16px; padding: 8px; text-align: left; transition: .2s; }
+    .theme-card.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
+    .theme-prev { height: 92px; border-radius: 11px; padding: 10px; position: relative; overflow: hidden; border: 1px solid rgba(212,175,55,.5); }
+    .theme-prev .bar1 { height: 10px; width: 55%; border-radius: 5px; background: var(--gold-grad); }
+    .theme-prev .bar2 { height: 26px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(212,175,55,.6); }
+    .theme-prev .circ { position: absolute; right: 10px; bottom: 10px; width: 26px; height: 26px; border-radius: 50%; background: var(--gold-grad); }
+    .theme-name { font-family: "Prompt"; font-size: 14px; margin: 8px 4px 2px; display: flex; justify-content: space-between; align-items: center; }
+    .check { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line-soft); display: grid; place-items: center; font-size: 12px; }
+    .theme-card.on .check { background: var(--gold-grad); border-color: transparent; color: #1a1406; }
+    .set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
+    .set-row + .set-row { border-top: 1px solid var(--line-soft); }
+    .set-row .t { font-weight: 500; }
+    .set-row .d { font-size: 12.5px; color: var(--muted); }
+    .switch { position: relative; width: 50px; height: 28px; flex: none; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch i { position: absolute; inset: 0; border-radius: 99px; background: var(--track); border: 1px solid var(--line-soft); transition: .2s; }
+    .switch i::after { content: ""; position: absolute; width: 22px; height: 22px; left: 2px; top: 2px; border-radius: 50%; background: #cfc6b0; transition: .2s; }
+    .switch input:checked + i { background: var(--gold-grad); }
+    .switch input:checked + i::after { left: 24px; background: #1a1406; }
+    .budget-input { display: flex; gap: 8px; }
+    .budget-input .input { flex: 1; }
+    .budget-input .btn-gold { width: auto; margin: 0; height: 48px; padding: 0 18px; font-size: 14.5px; }
+
+    /* ===================== MODAL / TOAST / LOADER ===================== */
+    .modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(0,0,0,.6); backdrop-filter: blur(3px); }
+    .modal.show { display: flex; }
+    .modal-box { width: 100%; max-width: 340px; text-align: center; animation: pop .22s ease; }
+    @keyframes pop { from { transform: scale(.92); opacity: 0; } to { transform: none; opacity: 1; } }
+    .modal-box h3 { margin: 6px 0 6px; font-size: 18px; }
+    .modal-box p { color: var(--muted); margin: 0 0 16px; font-size: 14px; line-height: 1.5; }
+    .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-btns button { height: 46px; border-radius: 13px; font-family: "Prompt"; font-size: 15px; }
+    .btn-ghost { background: transparent; border: 1px solid var(--line-soft); }
+    .btn-danger { background: var(--danger); border: 0; color: #fff; font-weight: 600; }
+
+    .toast {
+      position: fixed; left: 50%; top: 18px; transform: translate(-50%, -140%); z-index: 90;
+      background: var(--surface-3); border: 1px solid var(--gold); color: var(--text);
+      padding: 11px 18px; border-radius: 14px; font-family: "Prompt"; font-size: 14px;
+      box-shadow: var(--shadow); transition: transform .3s ease; max-width: 90vw; text-align: center;
+    }
+    .toast.show { transform: translate(-50%, 0); }
+    .toast.err { border-color: var(--danger); }
+
+    .loader { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); font-family: "Prompt"; }
+    .loader.show { display: flex; }
+    .spinner { width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(212,175,55,.2); border-top-color: var(--gold); animation: spin .9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .skeleton { border-radius: 12px; height: 18px; background: linear-gradient(90deg, var(--track), rgba(255,255,255,.14), var(--track)); background-size: 200% 100%; animation: sk 1.2s infinite; }
+    @keyframes sk { to { background-position: -200% 0; } }
+    .muted { color: var(--muted); }
+    .tag-demo { font-size: 11px; border: 1px solid var(--gold); color: var(--gold); border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ HEADER ============ -->
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <div class="monogram"><span class="gold-text">฿</span></div>
+        <div style="min-width:0">
+          <div class="brand-title"><span id="page-title">บัญชีรายวัน</span><span id="demo-tag"></span></div>
+          <div class="brand-sub" id="user-display">รายรับ · รายจ่าย</div>
+        </div>
+      </div>
+      <div class="month-switch">
+        <button id="m-prev" aria-label="เดือนก่อน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="month-label" id="month-label">—</div>
+        <button id="m-next" aria-label="เดือนถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HOME ============ -->
+    <section class="page active" id="page-home">
+      <div class="card lux">
+        <div class="shine"></div>
+        <div class="bal-label"><span>คงเหลือเดือนนี้</span><span id="bal-all"></span></div>
+        <div class="bal-amount gold-text" id="bal-month"><small>฿</small>0</div>
+        <div class="bal-grid">
+          <div>
+            <div class="bal-k"><span class="dot" style="background:var(--inc)"></span>รายรับ</div>
+            <div class="bal-v" id="bal-inc">0</div>
+          </div>
+          <div>
+            <div class="bal-k"><span class="dot" style="background:var(--exp)"></span>รายจ่าย</div>
+            <div class="bal-v" id="bal-exp">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title" id="gauge-title">ค่าใช้จ่ายวันนี้</div>
+          <button class="link-btn" onclick="go('analysis')">วิเคราะห์ ›</button>
+        </div>
+        <div class="gauge-wrap">
+          <svg id="day-gauge" viewBox="0 0 240 240"></svg>
+          <div class="gauge-center">
+            <div class="lbl" id="g-lbl">ค่าใช้จ่ายวันนี้</div>
+            <div class="big gold-text" id="g-amt">0</div>
+            <div class="sub" id="g-sub">ใช้ไป 0%</div>
+          </div>
+        </div>
+        <div class="target-pill">
+          <span class="t">เป้าหมาย</span><span class="v" id="g-target">0</span><span class="t">/ วัน</span>
+          <button onclick="go('settings'); setTimeout(()=>document.getElementById('budget').focus(),300)">แก้ไข</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">สุขภาพทางการเงิน</div></div>
+        <div class="gauge-wrap" style="max-width:300px">
+          <svg id="health-gauge" viewBox="0 0 260 150"></svg>
+        </div>
+        <div class="health-row">
+          <div class="lv"><small>สุขภาพการเงินเดือนนี้อยู่ในระดับ</small><b class="gold-text" id="h-level">—</b></div>
+          <div class="sc"><b id="h-score">0</b><span>10</span></div>
+        </div>
+        <div class="health-note" id="h-note"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">รายการล่าสุด</div>
+          <button class="link-btn" onclick="go('list')">ดูทั้งหมด ›</button>
+        </div>
+        <div id="recent" class="tx-list" style="margin:0 -12px -8px"></div>
+      </div>
+    </section>
+
+    <!-- ============ ANALYSIS ============ -->
+    <section class="page" id="page-analysis">
+      <div class="seg" style="margin-bottom:14px">
+        <button class="on" data-ana="exp">ค่าใช้จ่าย</button>
+        <button data-ana="inc">รายรับ</button>
+      </div>
+      <div class="card lux">
+        <div class="card-head"><div class="card-title">ตามหมวดหมู่</div><span class="muted" style="font-size:13px" id="ana-count"></span></div>
+        <div class="donut-box" id="donut-box">
+          <svg id="donut" viewBox="0 0 300 300"></svg>
+          <div class="donut-center"><div class="lbl" id="d-lbl">ค่าใช้จ่าย</div><div class="big gold-text" id="d-total">฿0</div></div>
+        </div>
+      </div>
+      <div class="card" id="cat-list"></div>
+      <div class="card">
+        <div class="card-head"><div class="card-title" id="bars-title">รายวันทั้งเดือน</div><span class="muted" style="font-size:12px" id="bars-legend"></span></div>
+        <svg id="bars" viewBox="0 0 340 150" style="width:100%;height:auto;display:block"></svg>
+      </div>
+    </section>
+
+    <!-- ============ LIST ============ -->
+    <section class="page" id="page-list">
+      <div class="seg" style="margin-bottom:6px">
+        <button class="on" data-flt="all">ทั้งหมด</button>
+        <button data-flt="exp">รายจ่าย</button>
+        <button data-flt="inc">รายรับ</button>
+      </div>
+      <div id="tx-groups"></div>
+      <p class="muted" style="text-align:center;font-size:12px;margin:14px 0">แตะที่รายการเพื่อลบ</p>
+    </section>
+
+    <!-- ============ SETTINGS ============ -->
+    <section class="page" id="page-settings">
+      <div class="card lux">
+        <div class="card-head"><div class="card-title">ธีมแอป</div></div>
+        <div class="theme-grid">
+          <button class="theme-card" data-theme-pick="navy">
+            <div class="theme-prev" style="background:radial-gradient(circle at 50% -20%, #1b3c7a, #061229)">
+              <div class="bar1"></div><div class="bar2" style="background:#12295a"></div><div class="circ"></div>
+            </div>
+            <div class="theme-name"><span>น้ำเงินขอบทอง</span><span class="check">✓</span></div>
+          </button>
+          <button class="theme-card" data-theme-pick="black">
+            <div class="theme-prev" style="background:radial-gradient(circle at 50% -20%, #2a241a, #060606)">
+              <div class="bar1"></div><div class="bar2" style="background:#1a1917"></div><div class="circ"></div>
+            </div>
+            <div class="theme-name"><span>ดำทองหรู</span><span class="check">✓</span></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">เป้าหมายค่าใช้จ่ายต่อวัน</div></div>
+        <div class="budget-input">
+          <input class="input num" id="budget" type="number" inputmode="decimal" placeholder="เช่น 300">
+          <button class="btn-gold" onclick="saveBudget()">บันทึก</button>
+        </div>
+        <div class="health-note">ใช้คำนวณเกจ “ค่าใช้จ่ายวันนี้” และเส้นเป้าหมายในกราฟรายวัน</div>
+      </div>
+
+      <div class="card">
+        <div class="set-row">
+          <div><div class="t">ปิดหน้าต่างหลังบันทึก</div><div class="d">เมื่อเปิดผ่านแอป LINE</div></div>
+          <label class="switch"><input type="checkbox" id="close-after"><i></i></label>
+        </div>
+        <div class="set-row" style="display:block">
+          <div class="t">ชื่อผู้ใช้</div>
+          <div class="d" id="set-user" style="margin-bottom:8px">ใช้แสดงคำทักทาย และบันทึกในคอลัมน์ "ผู้บันทึก"</div>
+          <div class="budget-input">
+            <input class="input" id="username" type="text" maxlength="40" placeholder="พิมพ์ชื่อของคุณ">
+            <button class="btn-gold" onclick="saveUserName()">บันทึก</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ TABBAR ============ -->
+  <nav class="tabbar">
+    <button class="tab on" data-go="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>หน้าหลัก
+    </button>
+    <button class="tab" data-go="analysis">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 2.5A9 9 0 0 1 21.5 9H15z"/></svg>วิเคราะห์
+    </button>
+    <div class="fab-slot">
+      <button class="fab" onclick="openAdd()" aria-label="เพิ่มรายการ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <button class="tab" data-go="list">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>รายการ
+    </button>
+    <button class="tab" data-go="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>ตั้งค่า
+    </button>
+  </nav>
+</div>
+
+<!-- ============ ADD SHEET ============ -->
+<div class="overlay" id="overlay" onclick="closeAdd()"></div>
+<div class="sheet" id="sheet">
+  <div class="grabber"></div>
+  <div class="sheet-head">
+    <h3 class="prompt">บันทึกรายการ</h3>
+    <button class="x-btn" onclick="closeAdd()">×</button>
+  </div>
+
+  <div class="seg" id="add-type">
+    <button class="on" data-type="exp">รายจ่าย</button>
+    <button data-type="inc">รายรับ</button>
+  </div>
+
+  <div class="amount-box">
+    <div class="lbl">จำนวนเงิน (บาท)</div>
+    <div class="amount-input"><span>฿</span><input id="amount" type="number" inputmode="decimal" placeholder="0.00"></div>
+  </div>
+
+  <button class="btn-outline" id="btn-scan" onclick="document.getElementById('file').click()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
+    <span id="scan-text">สแกนสลิป / ใบเสร็จด้วย AI</span>
+  </button>
+  <input type="file" id="file" accept="image/*" hidden>
+
+  <label class="field-label">หมวดหมู่</label>
+  <div class="cat-grid" id="cat-grid"></div>
+
+  <div class="row2">
+    <div>
+      <label class="field-label">วันที่</label>
+      <input class="input" type="date" id="date">
+    </div>
+    <div>
+      <label class="field-label">บันทึก</label>
+      <input class="input" type="text" id="note" placeholder="เช่น ข้าวกลางวัน">
+    </div>
+  </div>
+
+  <button class="btn-gold" id="btn-submit" onclick="submitData()">บันทึกรายการ</button>
+</div>
+
+<!-- ============ MODAL / TOAST / LOADER ============ -->
+<div class="modal" id="modal">
+  <div class="card lux modal-box">
+    <div style="font-size:34px" id="modal-emo">🗑️</div>
+    <h3 class="prompt" id="modal-title">ลบรายการนี้?</h3>
+    <p id="modal-text"></p>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-danger" id="modal-ok">ลบ</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="gate" style="z-index:95">
+  <div class="card lux modal-box">
+    <div style="font-size:38px" id="gate-emo">🔒</div>
+    <h3 class="prompt" id="gate-title"></h3>
+    <p id="gate-text"></p>
+    <div id="gate-code" class="num" style="display:none;word-break:break-all;background:rgba(0,0,0,.3);border:1px dashed var(--gold);border-radius:12px;padding:10px;font-size:13px;margin-bottom:14px;user-select:all"></div>
+    <button class="btn-gold" style="margin-top:0" onclick="location.reload()">ลองใหม่</button>
+  </div>
+</div>
+<div class="loader" id="loader"><div class="spinner"></div><div id="loader-text">กำลังโหลด...</div></div>
+
+<script>
+/* ===================================================================
+   CONFIG
+   =================================================================== */
+/* ▼▼▼ ตั้งค่า 2 บรรทัดนี้ ▼▼▼ */
+const API_URL = "https://script.google.com/macros/s/AKfycbwUHM9bFMBJQsziQL0Lew3BACnwjQMBKjW4BIHQckvF2r19UNijPCmm8qO3je6RFZJXmw/exec";   // URL ของ Apps Script Web App (ลงท้ายด้วย /exec)
+const LIFF_ID = "2012297182-fyScU0XL";      // LIFF ID จาก LINE Developers
+/* ▲▲▲ ---------------------- ▲▲▲ */
+const PALETTE = ['#D4AF37','#4FA3E0','#E8735E','#5FC9A0','#B07CE0','#F2B84B','#E86F9F','#6FD3E8','#9DB86A','#C9A27E','#8C9EFF','#F28B50'];
+const TH_MONTH = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_MON_S = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TH_DAY = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+
+const LIVE = /^https:\/\/script\.google\.com\//.test(API_URL) && !/[?&]demo=1/.test(location.search);
+let lineToken = null;
+
+const state = {
+  ym: null, data: null,
+  settings: { dailyBudget: 300, theme: 'navy' },
+  cats: {
+    exp: ['🍴 อาหาร','🚗 การเดินทาง / น้ำมัน','🛍️ ของใช้ส่วนตัว / ช้อปปิ้ง','💡 บิล / ค่าใช้จ่ายประจำ','🏠 ที่พัก / ค่าเช่า','🏥 สุขภาพ','🎉 บันเทิง / ท่องเที่ยว','📚 การศึกษา','🎁 ของขวัญ / ทำบุญ','📦 อื่นๆ'],
+    inc: ['💰 รายรับ / เงินโอนเข้า','💼 เงินเดือน','📈 รายได้เสริม / ลงทุน','🪙 รายรับอื่นๆ']
+  },
+  ana: 'exp', flt: 'all', addType: 'exp', addCat: null, user: ''
+};
+
+/* ===================================================================
+   HELPERS
+   =================================================================== */
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('accdaily_' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('accdaily_' + k, JSON.stringify(v)); } catch (e) {} }
+};
+function run(fn, ...args) {
+  return new Promise((resolve, reject) => {
+    if (!LIVE) return setTimeout(() => { try { resolve(Demo[fn](...args)); } catch (e) { reject(e); } }, 250);
+    fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: fn, args, token: lineToken }) })
+      .then(r => r.json())
+      .then(j => {
+        if (j.ok) return resolve(j.data);
+        const err = new Error(j.error || 'เกิดข้อผิดพลาด'); err.code = j.code; err.userId = j.userId;
+        if (j.code === 'BAD_TOKEN' || j.code === 'NO_TOKEN') { relogin(); }
+        else if (j.code === 'FORBIDDEN') { showGate('forbidden', j.userId); }
+        reject(err);
+      })
+      .catch(() => reject(new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจสอบอินเทอร์เน็ต')));
+  });
+}
+function fmt(n, dec) {
+  n = Number(n) || 0;
+  const d = dec !== undefined ? dec : (Math.abs(n % 1) > 0.001 ? 2 : 0);
+  return n.toLocaleString('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function emojiOf(cat) { const m = String(cat).match(/^(\S+)\s/); return m && /[^\u0000-ɏ฀-๿]/.test(m[1]) ? m[1] : '📦'; }
+function nameOf(cat) { const m = String(cat).match(/^(\S+)\s(.+)$/); return m && /[^\u0000-ɏ฀-๿]/.test(m[1]) ? m[2] : cat; }
+function ymLabel(ym) { const [y, m] = ym.split('-').map(Number); return TH_MON_S[m - 1] + ' ' + String(y + 543).slice(-2); }
+function todayStr() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function shiftYm(ym, k) { let [y, m] = ym.split('-').map(Number); m += k; while (m < 1) { m += 12; y--; } while (m > 12) { m -= 12; y++; } return y + '-' + String(m).padStart(2, '0'); }
+function polar(cx, cy, r, deg) { const a = deg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+function arcPath(cx, cy, r, a0, a1) {
+  const [x0, y0] = polar(cx, cy, r, a0), [x1, y1] = polar(cx, cy, r, a1);
+  return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${(a1 - a0) > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+}
+let toastTimer;
+function toast(msg, err) {
+  const t = $('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast' + (err ? ' err' : ''), 2600);
+}
+function loading(on, text) { $('loader').classList.toggle('show', !!on); if (text) $('loader-text').textContent = text; }
+function errMsg(e) { return (e && e.message ? e.message : String(e)).replace(/^Error:\s*/, ''); }
+
+/* ===================================================================
+   THEME
+   =================================================================== */
+function applyTheme(t) {
+  t = t === 'black' ? 'black' : 'navy';
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'black' ? '#060606' : '#061229');
+  document.querySelectorAll('[data-theme-pick]').forEach(b => b.classList.toggle('on', b.dataset.themePick === t));
+  state.settings.theme = t;
+  store.set('theme', t);
+}
+document.querySelectorAll('[data-theme-pick]').forEach(b => b.onclick = () => {
+  applyTheme(b.dataset.themePick);
+  run('saveSettings', { theme: state.settings.theme }).catch(() => {});
+  toast('เปลี่ยนธีมเป็น ' + (state.settings.theme === 'black' ? 'ดำทองหรู' : 'น้ำเงินขอบทอง'));
+});
+
+/* ===================================================================
+   NAVIGATION
+   =================================================================== */
+const TITLES = { home: 'บัญชีรายวัน', analysis: 'การวิเคราะห์', list: 'รายการทั้งหมด', settings: 'ตั้งค่า' };
+function go(p) {
+  document.querySelectorAll('.page').forEach(s => s.classList.toggle('active', s.id === 'page-' + p));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.go === p));
+  $('page-title').textContent = TITLES[p];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (p === 'analysis') renderAnalysis();
+}
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+$('m-prev').onclick = () => load(shiftYm(state.ym, -1));
+$('m-next').onclick = () => load(shiftYm(state.ym, 1));
+document.querySelectorAll('[data-ana]').forEach(b => b.onclick = () => {
+  state.ana = b.dataset.ana;
+  document.querySelectorAll('[data-ana]').forEach(x => x.classList.toggle('on', x === b));
+  renderAnalysis();
+});
+document.querySelectorAll('[data-flt]').forEach(b => b.onclick = () => {
+  state.flt = b.dataset.flt;
+  document.querySelectorAll('[data-flt]').forEach(x => x.classList.toggle('on', x === b));
+  renderList();
+});
+
+/* ===================================================================
+   DATA LOAD
+   =================================================================== */
+async function load(ym, silent) {
+  if (!silent) loading(true, 'กำลังโหลดข้อมูล...');
+  try {
+    const d = await run('getDashboard', ym || '');
+    state.data = d; state.ym = d.ym;
+    if (d.categories) state.cats = d.categories;
+    if (d.settings) {
+      state.settings = Object.assign(state.settings, d.settings);
+      if (d.settings.theme && d.settings.theme !== document.documentElement.dataset.theme) applyTheme(d.settings.theme);
+    }
+    renderAll();
+  } catch (e) {
+    toast('โหลดข้อมูลไม่สำเร็จ: ' + errMsg(e), true);
+  } finally { loading(false); }
+}
+
+function renderAll() {
+  const d = state.data;
+  $('month-label').textContent = ymLabel(d.ym);
+  $('m-next').disabled = d.ym >= d.todayKey.slice(0, 7);
+  $('budget').value = state.settings.dailyBudget || '';
+  renderHome(); renderList();
+  if ($('page-analysis').classList.contains('active')) renderAnalysis();
+}
+
+/* ===================================================================
+   HOME
+   =================================================================== */
+function renderHome() {
+  const d = state.data, m = d.month;
+  const bal = m.income - m.expense;
+  $('bal-month').innerHTML = '<small>฿</small>' + (bal < 0 ? '-' : '') + fmt(Math.abs(bal));
+  $('bal-inc').textContent = fmt(m.income);
+  $('bal-exp').textContent = fmt(m.expense);
+  $('bal-all').textContent = 'สะสมทั้งหมด ฿' + fmt(d.allBalance);
+
+  // daily gauge
+  const budget = Number(state.settings.dailyBudget) || 0;
+  let spent, label;
+  if (d.isCurrentMonth) { spent = d.today.expense; label = 'ค่าใช้จ่ายวันนี้'; }
+  else { spent = m.expense / d.daysInMonth; label = 'เฉลี่ยต่อวัน'; }
+  const pct = budget > 0 ? spent / budget : 0;
+  $('gauge-title').textContent = d.isCurrentMonth ? 'ค่าใช้จ่ายวันนี้' : 'ค่าใช้จ่ายเฉลี่ยต่อวัน · ' + TH_MONTH[Number(d.ym.slice(5)) - 1];
+  $('g-lbl').textContent = label;
+  $('g-amt').textContent = fmt(spent, spent % 1 ? 0 : undefined);
+  $('g-sub').innerHTML = budget > 0 ? (pct > 1 ? '<span style="color:var(--exp)">เกินเป้า ' + fmt((pct - 1) * 100, 1) + '%</span>' : 'ใช้ไป ' + fmt(pct * 100, 1) + '%') : 'ยังไม่ได้ตั้งเป้าหมาย';
+  $('g-target').textContent = fmt(budget);
+  drawTickGauge($('day-gauge'), Math.min(pct, 1), pct > 1);
+
+  // health
+  const h = healthScore(m.income, m.expense);
+  drawHealthGauge($('health-gauge'), h.score);
+  $('h-score').textContent = fmt(h.score, h.score % 1 ? 1 : 0);
+  $('h-level').textContent = h.level;
+  $('h-note').textContent = h.note;
+
+  // recent
+  $('recent').innerHTML = d.tx.length ? d.tx.slice(0, 5).map(txRow).join('') : emptyBox('ยังไม่มีรายการในเดือนนี้', '🧾');
+  bindTxClicks($('recent'));
+}
+
+function healthScore(inc, exp) {
+  let score, rate = null;
+  if (inc <= 0 && exp <= 0) score = 5;
+  else if (inc <= 0) score = 1;
+  else { rate = (inc - exp) / inc; score = Math.max(0, Math.min(10, 5 + rate * 10)); }
+  score = Math.round(score * 10) / 10;
+  const level = score >= 8.5 ? 'ดีมาก' : score >= 7 ? 'ดี' : score >= 5 ? 'ปานกลาง' : score >= 3 ? 'พอใช้' : 'ต้องระวัง';
+  let note;
+  if (rate === null) note = inc <= 0 && exp <= 0 ? 'ยังไม่มีข้อมูลเดือนนี้ เริ่มบันทึกรายการแรกได้ที่ปุ่ม +' : 'ยังไม่มีรายรับในเดือนนี้ ระวังการใช้จ่ายเกินตัว';
+  else if (rate >= 0) note = 'เก็บออมได้ ' + fmt(rate * 100, 1) + '% ของรายรับ' + (rate < 0.2 ? ' — แนะนำให้ออมอย่างน้อย 20%' : ' — ยอดเยี่ยม รักษาไว้นะ');
+  else note = 'รายจ่ายเกินรายรับ ' + fmt(-rate * 100, 1) + '% ลองตั้งเป้าหมายรายวันให้ต่ำลง';
+  return { score, level, note };
+}
+
+function drawTickGauge(svg, pct, over) {
+  const N = 64, cx = 120, cy = 120, a0 = 135, sweep = 270;
+  const filled = Math.round(pct * (N - 1));
+  let s = '';
+  for (let i = 0; i < N; i++) {
+    const a = a0 + sweep * i / (N - 1);
+    const on = i <= filled && pct > 0;
+    const [x0, y0] = polar(cx, cy, 92, a), [x1, y1] = polar(cx, cy, 108, a);
+    const col = on ? (over ? 'var(--exp)' : 'url(#gg)') : 'var(--track)';
+    s += `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="${col}" stroke-width="3" stroke-linecap="round"/>`;
+  }
+  const am = a0 + sweep * pct;
+  const [mx0, my0] = polar(cx, cy, 86, am), [mx1, my1] = polar(cx, cy, 114, am);
+  s += `<line x1="${mx0.toFixed(1)}" y1="${my0.toFixed(1)}" x2="${mx1.toFixed(1)}" y2="${my1.toFixed(1)}" stroke="#e5534b" stroke-width="5" stroke-linecap="round"/>`;
+  svg.innerHTML = `<defs><linearGradient id="gg" gradientUnits="userSpaceOnUse" x1="20" y1="220" x2="220" y2="20"><stop offset="0" stop-color="#9c7a22"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#f6e09a"/></linearGradient></defs>` + s;
+}
+
+function drawHealthGauge(svg, score) {
+  const cx = 130, cy = 128, r = 96, w = 22;
+  const segs = [['#e5534b', 0, 2], ['#ef8a3c', 2, 4], ['#e9c24a', 4, 6], ['#b8cf55', 6, 8], ['#5cd6a1', 8, 10]];
+  let s = '';
+  segs.forEach(([c, a, b]) => {
+    s += `<path d="${arcPath(cx, cy, r, 180 + a * 18 + 1, 180 + b * 18 - 1)}" stroke="${c}" stroke-width="${w}" fill="none" opacity=".92"/>`;
+  });
+  for (let v = 0; v <= 10; v += 2) {
+    const [x, y] = polar(cx, cy, r + w / 2 + 12, 180 + v * 18);
+    s += `<text x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="middle" font-family="Prompt" font-size="12" fill="var(--muted)">${v}</text>`;
+  }
+  const a = 180 + score * 18;
+  const [nx, ny] = polar(cx, cy, r - 18, a);
+  const [bx1, by1] = polar(cx, cy, 9, a + 90), [bx2, by2] = polar(cx, cy, 9, a - 90);
+  s += `<polygon points="${nx.toFixed(1)},${ny.toFixed(1)} ${bx1.toFixed(1)},${by1.toFixed(1)} ${bx2.toFixed(1)},${by2.toFixed(1)}" fill="url(#hg)"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="15" fill="var(--surface-3)" stroke="url(#hg)" stroke-width="3"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="5" fill="url(#hg)"/>`;
+  svg.innerHTML = `<defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="100" y1="40" x2="160" y2="150"><stop offset="0" stop-color="#f6e09a"/><stop offset="1" stop-color="#b08a2c"/></linearGradient></defs>` + s;
+}
+
+/* ===================================================================
+   ANALYSIS
+   =================================================================== */
+function catColorMap(entries) { const m = {}; entries.forEach(([c], i) => m[c] = PALETTE[i % PALETTE.length]); return m; }
+
+function renderAnalysis() {
+  const d = state.data; if (!d) return;
+  const type = state.ana;
+  const data = d.byCat[type] || {};
+  const entries = Object.entries(data).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((s, e) => s + e[1], 0);
+  const colors = catColorMap(entries);
+  $('d-lbl').textContent = type === 'exp' ? 'ค่าใช้จ่าย' : 'รายรับ';
+  $('d-total').textContent = '฿' + fmt(total);
+  $('ana-count').textContent = entries.length ? entries.length + ' หมวด' : '';
+
+  // donut
+  const svg = $('donut'), box = $('donut-box');
+  box.querySelectorAll('.bubble').forEach(b => b.remove());
+  const cx = 150, cy = 150, r = 92, w = 44;
+  let s = `<circle cx="${cx}" cy="${cy}" r="${r}" stroke="var(--track)" stroke-width="${w}" fill="none"/>`;
+  if (total > 0) {
+    let a = -90;
+    const gap = entries.length > 1 ? 1.2 : 0;
+    entries.forEach(([cat, v]) => {
+      const sweep = v / total * 360;
+      const c = colors[cat];
+      if (sweep >= 359.9) s += `<circle cx="${cx}" cy="${cy}" r="${r}" stroke="${c}" stroke-width="${w}" fill="none"/>`;
+      else s += `<path d="${arcPath(cx, cy, r, a + gap / 2, a + sweep - gap / 2)}" stroke="${c}" stroke-width="${w}" fill="none"/>`;
+      const mid = a + sweep / 2, p = v / total;
+      if (p >= 0.04) {
+        const [tx, ty] = polar(cx, cy, r, mid);
+        s += `<text class="seg-pct" x="${tx.toFixed(1)}" y="${(ty + 4).toFixed(1)}" text-anchor="middle">${Math.round(p * 100)}%</text>`;
+      }
+      if (p >= 0.05 && entries.length <= 10) {
+        const [bx, by] = polar(cx, cy, 136, mid);
+        const el = document.createElement('div');
+        el.className = 'bubble'; el.style.left = (bx / 3) + '%'; el.style.top = (by / 3) + '%';
+        el.style.setProperty('--c', c); el.textContent = emojiOf(cat);
+        box.appendChild(el);
+      }
+      a += sweep;
+    });
+  }
+  s += `<circle cx="${cx}" cy="${cy}" r="${r - w / 2 - 4}" fill="none" stroke="var(--line-soft)" stroke-width="1"/>`;
+  svg.innerHTML = s;
+
+  // category list
+  $('cat-list').innerHTML = entries.length ? entries.map(([cat, v]) => {
+    const p = v / total * 100;
+    return `<div class="cat-row" style="--c:${colors[cat]}">
+      <div class="emo">${emojiOf(cat)}</div>
+      <div class="cat-main">
+        <div class="cat-top"><span class="cat-name">${esc(nameOf(cat))}</span><span class="cat-amt">฿${fmt(v)}</span></div>
+        <div class="bar"><i style="width:${p.toFixed(1)}%"></i></div>
+      </div>
+      <div class="cat-pct">${fmt(p, 1)}%</div>
+    </div>`;
+  }).join('') : emptyBox(type === 'exp' ? 'ยังไม่มีค่าใช้จ่ายในเดือนนี้' : 'ยังไม่มีรายรับในเดือนนี้', '📊');
+
+  renderBars();
+}
+
+function renderBars() {
+  const d = state.data, type = state.ana, svg = $('bars');
+  const W = 340, H = 150, pl = 6, pr = 6, pt = 14, pb = 22;
+  const n = d.daysInMonth, budget = type === 'exp' ? Number(state.settings.dailyBudget) || 0 : 0;
+  const vals = []; for (let i = 1; i <= n; i++) vals.push((d.daily[i] || {})[type] || 0);
+  const max = Math.max(budget * 1.15, ...vals, 1);
+  const bw = (W - pl - pr) / n;
+  const col = type === 'exp' ? 'url(#bg-exp)' : 'url(#bg-inc)';
+  let s = `<defs>
+    <linearGradient id="bg-exp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e09a"/><stop offset="1" stop-color="#9c7a22"/></linearGradient>
+    <linearGradient id="bg-inc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ff0c4"/><stop offset="1" stop-color="#2f9c6e"/></linearGradient></defs>`;
+  s += `<line x1="${pl}" x2="${W - pr}" y1="${H - pb}" y2="${H - pb}" stroke="var(--line-soft)"/>`;
+  vals.forEach((v, i) => {
+    const h = v / max * (H - pt - pb);
+    const x = pl + i * bw + bw * 0.18;
+    const over = budget && v > budget;
+    s += `<rect x="${x.toFixed(1)}" y="${(H - pb - h).toFixed(1)}" width="${(bw * 0.64).toFixed(1)}" height="${Math.max(h, v > 0 ? 2 : 0).toFixed(1)}" rx="2" fill="${over ? 'var(--exp)' : col}"/>`;
+    if ((i + 1) === 1 || (i + 1) % 5 === 0) s += `<text x="${(x + bw * 0.32).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="10" font-family="Prompt" fill="var(--muted)">${i + 1}</text>`;
+  });
+  if (budget) {
+    const y = H - pb - budget / max * (H - pt - pb);
+    s += `<line x1="${pl}" x2="${W - pr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--gold)" stroke-dasharray="4 4" stroke-width="1.2"/>`;
+    s += `<text x="${W - pr}" y="${(y - 4).toFixed(1)}" text-anchor="end" font-size="10" font-family="Prompt" fill="var(--gold)">เป้า ${fmt(budget)}</text>`;
+  }
+  svg.innerHTML = s;
+  $('bars-title').textContent = type === 'exp' ? 'ค่าใช้จ่ายรายวัน' : 'รายรับรายวัน';
+  const tot = vals.reduce((a, b) => a + b, 0);
+  $('bars-legend').textContent = 'เฉลี่ย ฿' + fmt(tot / (d.dayOfMonth || n), 0) + '/วัน';
+}
+
+/* ===================================================================
+   TRANSACTIONS
+   =================================================================== */
+function txRow(t) {
+  const time = t.date.slice(11, 16);
+  const sign = t.type === 'inc' ? '+' : '-';
+  const sub = [t.note, t.user].filter(Boolean).join(' · ');
+  return `<div class="tx clickable" data-row="${t.row}" data-amt="${t.amount}" data-desc="${esc(nameOf(t.category))} ฿${fmt(t.amount)}">
+    <div class="emo" style="--c:${t.type === 'inc' ? 'var(--inc)' : 'var(--gold)'}">${emojiOf(t.category)}</div>
+    <div class="tx-main"><div class="tx-cat">${esc(nameOf(t.category))}</div><div class="tx-note">${esc(sub || '—')}</div></div>
+    <div class="tx-amt ${t.type}">${sign}${fmt(t.amount)}<small>${time}</small></div>
+  </div>`;
+}
+function emptyBox(text, ic) { return `<div class="empty"><span class="ic">${ic || '🗂️'}</span>${text}</div>`; }
+
+function renderList() {
+  const d = state.data; if (!d) return;
+  const tx = d.tx.filter(t => state.flt === 'all' || t.type === state.flt);
+  if (!tx.length) { $('tx-groups').innerHTML = `<div class="card" style="margin-top:12px">${emptyBox('ไม่มีรายการ', '🧾')}</div>`; return; }
+  const groups = {};
+  tx.forEach(t => (groups[t.date.slice(0, 10)] = groups[t.date.slice(0, 10)] || []).push(t));
+  $('tx-groups').innerHTML = Object.keys(groups).sort().reverse().map(k => {
+    const items = groups[k];
+    const [y, m, dd] = k.split('-').map(Number);
+    const dow = TH_DAY[new Date(y, m - 1, dd).getDay()];
+    const net = items.reduce((s, t) => s + (t.type === 'inc' ? t.amount : -t.amount), 0);
+    return `<div class="day-head"><span>${dow} ${dd} ${TH_MON_S[m - 1]}</span><b>${net >= 0 ? '+' : '-'}฿${fmt(Math.abs(net))}</b></div>
+      <div class="card tx-list" style="margin-bottom:4px">${items.map(txRow).join('')}</div>`;
+  }).join('');
+  bindTxClicks($('tx-groups'));
+}
+
+function bindTxClicks(root) {
+  root.querySelectorAll('.tx.clickable').forEach(el => el.onclick = () => {
+    confirmModal('ลบรายการนี้?', el.dataset.desc + '<br><small>การลบจะลบแถวนี้ออกจาก Google Sheet</small>', async () => {
+      loading(true, 'กำลังลบ...');
+      try { await run('deleteTransaction', Number(el.dataset.row), Number(el.dataset.amt)); toast('ลบรายการแล้ว'); await load(state.ym, true); }
+      catch (e) { toast(errMsg(e), true); }
+      finally { loading(false); }
+    });
+  });
+}
+
+function confirmModal(title, html, onOk) {
+  $('modal-title').textContent = title; $('modal-text').innerHTML = html;
+  $('modal').classList.add('show');
+  $('modal-ok').onclick = () => { closeModal(); onOk(); };
+}
+function closeModal() { $('modal').classList.remove('show'); }
+$('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
+
+/* ===================================================================
+   ADD SHEET
+   =================================================================== */
+function openAdd() {
+  setAddType('exp');
+  $('amount').value = ''; $('note').value = ''; $('date').value = todayStr();
+  $('overlay').classList.add('show'); $('sheet').classList.add('show');
+  setTimeout(() => $('amount').focus(), 350);
+}
+function closeAdd() { $('overlay').classList.remove('show'); $('sheet').classList.remove('show'); }
+function setAddType(t, keepCat) {
+  state.addType = t;
+  document.querySelectorAll('#add-type button').forEach(b => b.classList.toggle('on', b.dataset.type === t));
+  if (!keepCat || !state.cats[t].includes(state.addCat)) state.addCat = state.cats[t][0];
+  renderCatGrid();
+}
+document.querySelectorAll('#add-type button').forEach(b => b.onclick = () => setAddType(b.dataset.type));
+function renderCatGrid() {
+  $('cat-grid').innerHTML = state.cats[state.addType].map(c =>
+    `<button class="chip ${c === state.addCat ? 'on' : ''}" data-cat="${esc(c)}"><span class="emo">${emojiOf(c)}</span>${esc(nameOf(c))}</button>`
+  ).join('');
+  $('cat-grid').querySelectorAll('.chip').forEach(b => b.onclick = () => { state.addCat = b.dataset.cat; renderCatGrid(); });
+}
+
+async function submitData() {
+  const amount = parseFloat($('amount').value);
+  if (!(amount > 0)) { toast('กรุณากรอกจำนวนเงิน', true); $('amount').focus(); return; }
+  const btn = $('btn-submit');
+  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+  try {
+    await run('saveData', {
+      amount, category: state.addCat, note: $('note').value.trim(),
+      type: state.addType === 'inc' ? 'รายรับ' : 'รายจ่าย',
+      date: $('date').value, user: state.user
+    });
+    if (typeof liff !== 'undefined' && liff.isInClient && liff.isInClient() && store.get('closeAfter', false)) { liff.closeWindow(); return; }
+    closeAdd();
+    toast('✓ บันทึกสำเร็จ ' + (state.addType === 'inc' ? '+' : '-') + '฿' + fmt(amount));
+    const ym = $('date').value.slice(0, 7);
+    await load(ym || state.ym, true);
+  } catch (e) {
+    toast('บันทึกไม่สำเร็จ: ' + errMsg(e), true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'บันทึกรายการ';
+  }
+}
+
+/* ---- AI receipt scan ---- */
+$('file').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  const label = $('scan-text');
+  label.textContent = 'AI กำลังอ่านภาพ...'; $('btn-scan').disabled = true;
+  try {
+    const b64 = await resizeToBase64(f, 1400, 0.85);
+    const r = await run('analyzeReceipt', b64, 'image/jpeg');
+    const t = (r.type === 'รายรับ') ? 'inc' : 'exp';
+    setAddType(t);
+    if (r.category) {
+      const found = state.cats[t].find(c => c === r.category) || state.cats[t].find(c => nameOf(c) === nameOf(r.category));
+      if (found) { state.addCat = found; renderCatGrid(); }
+    }
+    if (r.amount) $('amount').value = Number(String(r.amount).replace(/,/g, ''));
+    if (r.note) $('note').value = r.note;
+    if (r.date && /^\d{4}-\d{2}-\d{2}$/.test(r.date)) $('date').value = r.date;
+    toast('✨ AI กรอกข้อมูลให้แล้ว ตรวจสอบก่อนบันทึก');
+  } catch (err) {
+    toast(errMsg(err), true);
+  } finally {
+    label.textContent = 'สแกนสลิป / ใบเสร็จด้วย AI'; $('btn-scan').disabled = false;
+  }
+};
+function resizeToBase64(file, max, q) {
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      const k = Math.min(1, max / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', q).split(',')[1]);
+    };
+    img.onerror = () => reject(new Error('เปิดไฟล์ภาพไม่ได้'));
+    img.src = url;
+  });
+}
+
+/* ===================================================================
+   SETTINGS
+   =================================================================== */
+async function saveBudget() {
+  const v = parseFloat($('budget').value);
+  if (!(v >= 0)) { toast('กรุณากรอกตัวเลข', true); return; }
+  state.settings.dailyBudget = v;
+  if (state.data) renderAll();
+  try { await run('saveSettings', { dailyBudget: v }); toast('บันทึกเป้าหมาย ฿' + fmt(v) + ' / วัน'); }
+  catch (e) { toast(errMsg(e), true); }
+}
+function setUserName(name, persist) {
+  name = String(name || '').trim();
+  state.user = name;
+  if (persist) store.set('userName', name);
+  $('username').value = name;
+  $('user-display').textContent = name ? 'สวัสดี ' + name : 'รายรับ · รายจ่าย';
+}
+function saveUserName() {
+  const v = $('username').value.trim();
+  if (!v && state.lineName) { store.set('userName', ''); setUserName(state.lineName, false); toast('ใช้ชื่อจาก LINE: ' + state.lineName); return; }
+  setUserName(v, true);
+  toast(v ? 'บันทึกชื่อ "' + v + '" แล้ว' : 'ล้างชื่อผู้ใช้แล้ว');
+}
+$('username').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveUserName(); $('username').blur(); } });
+setUserName(store.get('userName', ''), false);
+$('close-after').checked = store.get('closeAfter', false);
+$('close-after').onchange = e => store.set('closeAfter', e.target.checked);
+
+/* ===================================================================
+   LINE LIFF
+   =================================================================== */
+async function initLiff() {
+  if (typeof liff === 'undefined') throw new Error('โหลด LINE SDK ไม่ได้');
+  await liff.init({ liffId: LIFF_ID });
+  if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return false; }
+  lineToken = liff.getAccessToken();
+  liff.getProfile().then(p => {
+    state.lineName = p.displayName;
+    if (!store.get('userName', '')) setUserName(p.displayName, false);
+  }).catch(() => {});
+  return true;
+}
+function relogin() {
+  try { if (liff.isLoggedIn()) liff.logout(); liff.login({ redirectUri: location.href }); } catch (e) {}
+}
+function showGate(kind, info) {
+  const g = $('gate');
+  if (kind === 'forbidden') {
+    $('gate-emo').textContent = '🔒';
+    $('gate-title').textContent = 'ยังไม่ได้รับสิทธิ์ใช้งาน';
+    $('gate-text').innerHTML = 'ส่งรหัสด้านล่างให้เจ้าของแอป เพื่อเพิ่มใน Script Property <b>ALLOWED_LINE_IDS</b>';
+    $('gate-code').textContent = info || '';
+    $('gate-code').style.display = info ? 'block' : 'none';
+  } else {
+    $('gate-emo').textContent = '⚠️';
+    $('gate-title').textContent = 'เชื่อมต่อ LINE ไม่สำเร็จ';
+    $('gate-text').textContent = info || '';
+    $('gate-code').style.display = 'none';
+  }
+  g.classList.add('show');
+}
+
+/* ===================================================================
+   DEMO MODE (ยังไม่ได้ใส่ API_URL หรือเปิดด้วย ?demo=1)
+   =================================================================== */
+const Demo = (() => {
+  let rows = [], settings = { dailyBudget: 300, theme: store.get('theme', 'navy') }, seq = 1;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const rnd = (a, b) => Math.round(a + Math.random() * (b - a));
+  for (let back = 0; back < 2; back++) {
+    const y = now.getFullYear(), m = now.getMonth() - back;
+    const dt = new Date(y, m, 1), Y = dt.getFullYear(), M = dt.getMonth();
+    const last = back ? new Date(Y, M + 1, 0).getDate() : now.getDate();
+    const push = (day, type, cat, amt, note) => rows.push({ row: ++seq, date: `${Y}-${pad(M + 1)}-${pad(day)}T${pad(rnd(7, 21))}:${pad(rnd(0, 59))}`, type, category: cat, amount: amt, note, user: '' });
+    push(1, 'inc', '💼 เงินเดือน', 32000, 'เงินเดือน');
+    push(Math.min(15, last), 'inc', '📈 รายได้เสริม / ลงทุน', 4500, 'งานสอนพิเศษ');
+    push(Math.min(3, last), 'exp', '🏠 ที่พัก / ค่าเช่า', 6500, 'ค่าเช่าห้อง');
+    push(Math.min(5, last), 'exp', '💡 บิล / ค่าใช้จ่ายประจำ', 1290, 'ค่าไฟ + เน็ต');
+    for (let d = 1; d <= last; d++) {
+      push(d, 'exp', '🍴 อาหาร', rnd(60, 220), ['ข้าวกลางวัน', 'กาแฟ', 'ข้าวมันไก่', 'ก๋วยเตี๋ยว'][rnd(0, 3)]);
+      if (Math.random() < .5) push(d, 'exp', '🚗 การเดินทาง / น้ำมัน', rnd(40, 600), 'น้ำมัน / BTS');
+      if (Math.random() < .2) push(d, 'exp', '🛍️ ของใช้ส่วนตัว / ช้อปปิ้ง', rnd(90, 900), '7-Eleven');
+      if (Math.random() < .1) push(d, 'exp', '🎉 บันเทิง / ท่องเที่ยว', rnd(200, 1500), 'ดูหนัง');
+      if (Math.random() < .06) push(d, 'exp', '🏥 สุขภาพ', rnd(100, 800), 'ร้านยา');
+    }
+  }
+  const getAll = () => rows.slice();
+  return {
+    getDashboard(ym) {
+      const tk = todayStr(); ym = ym || tk.slice(0, 7);
+      const month = { income: 0, expense: 0 }, today = { income: 0, expense: 0 }, all = { income: 0, expense: 0 };
+      const byCat = { exp: {}, inc: {} }, daily = {}, tx = [];
+      getAll().forEach(r => {
+        const k = r.type === 'inc' ? 'income' : 'expense', dk = r.date.slice(0, 10);
+        all[k] += r.amount; if (dk === tk) today[k] += r.amount;
+        if (dk.slice(0, 7) === ym) {
+          month[k] += r.amount; byCat[r.type][r.category] = (byCat[r.type][r.category] || 0) + r.amount;
+          const day = +dk.slice(8); daily[day] = daily[day] || { exp: 0, inc: 0 }; daily[day][r.type] += r.amount; tx.push(r);
+        }
+      });
+      tx.sort((a, b) => a.date < b.date ? 1 : -1);
+      const [y, m] = ym.split('-').map(Number), dim = new Date(y, m, 0).getDate(), cur = ym === tk.slice(0, 7);
+      return { ym, todayKey: tk, isCurrentMonth: cur, dayOfMonth: cur ? +tk.slice(8) : dim, daysInMonth: dim, month, today, allBalance: all.income - all.expense, byCat, daily, tx, settings: Object.assign({}, settings) };
+    },
+    saveData(d) { rows.push({ row: ++seq, date: (d.date || todayStr()) + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes()), type: d.type === 'รายรับ' ? 'inc' : 'exp', category: d.category, amount: +d.amount, note: d.note, user: d.user }); return 'บันทึกสำเร็จ!'; },
+    deleteTransaction(row) { rows = rows.filter(r => r.row !== row); return 'ok'; },
+    saveSettings(p) { Object.assign(settings, p); return settings; },
+    analyzeReceipt() { return { amount: 185, type: 'รายจ่าย', category: '🍴 อาหาร', note: 'กาแฟพันธุ์ไทย (ตัวอย่าง)', date: todayStr() }; }
+  };
+})();
+
+/* ===================================================================
+   START
+   =================================================================== */
+applyTheme(store.get('theme', 'navy'));
+(async () => {
+  if (!LIVE) { $('demo-tag').innerHTML = '<span class="tag-demo">DEMO</span>'; load(''); return; }
+  loading(true, 'กำลังเข้าสู่ระบบ LINE...');
+  try {
+    if (await initLiff()) load('');
+  } catch (e) {
+    loading(false);
+    showGate('error', errMsg(e));
+  }
+})();
+</script>
+</body>
+</html>
