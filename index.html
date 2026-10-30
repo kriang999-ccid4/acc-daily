@@ -194,7 +194,20 @@
 
     /* ===== Quote picker ===== */
     .q-list { display: flex; flex-direction: column; gap: 8px; max-height: 330px; overflow-y: auto; padding-right: 2px; }
-    .q-item { text-align: left; border: 1px solid var(--line-soft); background: rgba(0,0,0,.15); border-radius: 14px; padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start; }
+    .q-item { text-align: left; border: 1px solid var(--line-soft); background: rgba(0,0,0,.15); border-radius: 14px; padding: 10px 8px 10px 12px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+    .q-body { flex: 1; min-width: 0; }
+    .q-acts { display: flex; flex-direction: column; gap: 6px; flex: none; }
+    .q-acts button { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--line-soft); background: rgba(0,0,0,.2); font-size: 14px; display: grid; place-items: center; }
+    .q-acts button:active { background: rgba(var(--acc-rgb),.2); }
+    .q-tools { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+    .q-tools .btn-outline { height: 44px; }
+    .q-tools .btn-ghost { height: 44px; border-radius: 14px; padding: 0 14px; font-family: "Prompt"; font-size: 13px; color: var(--muted); }
+    .q-editor { display: none; margin-top: 12px; padding: 12px; border-radius: 16px; border: 1px solid var(--gold); background: rgba(var(--acc-rgb),.06); }
+    .q-editor.show { display: block; animation: fade .25s ease; }
+    .q-editor h4 { margin: 0 0 8px; font-family: "Prompt"; font-weight: 600; font-size: 15px; color: var(--gold-hi); }
+    .q-editor textarea.input { height: auto; min-height: 64px; padding: 10px 14px; resize: vertical; line-height: 1.45; }
+    .q-editor .row-btns { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; margin-top: 4px; }
+    .q-editor .row-btns button { height: 46px; border-radius: 13px; font-family: "Prompt"; font-size: 15px; margin: 0; }
     .q-item.on { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(var(--acc-rgb),.15); background: rgba(var(--acc-rgb),.07); }
     .q-item .q-en { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 14px; line-height: 1.4; }
     .q-item .q-th { font-size: 12px; color: var(--muted); margin-top: 3px; }
@@ -712,19 +725,26 @@
       <div class="card">
         <div class="card-head"><div class="card-title">คำคมหน้าแรก</div><button class="link-btn" onclick="showSplash()">ดูตัวอย่าง ›</button></div>
         <div class="set-row" style="padding-top:0">
-          <div><div class="t">สุ่มคำคมทุกครั้งที่เปิด</div><div class="d">หรือเลือกคำคมที่ชอบด้านล่าง</div></div>
+          <div><div class="t">สุ่มคำคมทุกครั้งที่เปิด</div><div class="d">แตะคำคมเพื่อเลือก · ✏️ แก้ไข · 🗑️ ลบ</div></div>
           <label class="switch"><input type="checkbox" id="q-random"><i></i></label>
         </div>
         <div class="q-list" id="q-list"></div>
-        <details style="margin-top:12px">
-          <summary class="prompt" style="cursor:pointer;color:var(--gold);font-size:14px">✍️ เขียนคำคมของคุณเอง</summary>
-          <div class="q-form">
-            <input class="input" id="q-en" maxlength="160" placeholder="คำคม (ภาษาอังกฤษหรือภาษาไทย)">
-            <input class="input" id="q-th" maxlength="160" placeholder="คำแปล / ความหมาย (ไม่บังคับ)">
+        <div class="q-tools">
+          <button class="btn-outline" onclick="openQuoteEditor(-1)">➕ เพิ่มคำคมใหม่</button>
+          <button class="btn-ghost" onclick="resetQuotes()">คืนค่าเริ่มต้น</button>
+        </div>
+        <div class="q-editor" id="q-editor">
+          <h4 id="q-ed-title">แก้ไขคำคม</h4>
+          <div class="q-form" style="margin-top:0">
+            <textarea class="input" id="q-en" maxlength="200" rows="2" placeholder="คำคม (ภาษาอังกฤษหรือภาษาไทย)"></textarea>
+            <textarea class="input" id="q-th" maxlength="200" rows="2" placeholder="คำแปล / ความหมาย (ไม่บังคับ)"></textarea>
             <input class="input" id="q-by" maxlength="60" placeholder="ผู้กล่าว (ไม่บังคับ)">
-            <button class="btn-gold" style="margin-top:2px" onclick="saveCustomQuote()">ใช้คำคมนี้</button>
+            <div class="row-btns">
+              <button class="btn-ghost" onclick="closeQuoteEditor()">ยกเลิก</button>
+              <button class="btn-gold" onclick="saveQuote()">บันทึกคำคม</button>
+            </div>
           </div>
-        </details>
+        </div>
       </div>
 
       <div class="card">
@@ -1287,6 +1307,7 @@ function bindTxClicks(root) {
 
 function confirmModal(title, html, onOk) {
   $('modal-title').textContent = title; $('modal-text').innerHTML = html;
+  $('modal-ok').textContent = /คืนค่า/.test(title) ? 'ยืนยัน' : 'ลบ';
   $('modal').classList.add('show');
   $('modal-ok').onclick = () => { closeModal(); onOk(); };
 }
@@ -1615,7 +1636,7 @@ function renderCal() {
 /* ===================================================================
    QUOTES (คำคมหน้าแรก) — จำไว้ในเครื่อง
    =================================================================== */
-const QUOTES = [
+const DEFAULT_QUOTES = [
   { en: 'Discipline is the bridge between goals and accomplishment.', th: 'วินัยคือสะพานระหว่างเป้าหมายและความสำเร็จ', by: 'Jim Rohn' },
   { en: 'Do not save what is left after spending, but spend what is left after saving.', th: 'อย่าเก็บเงินที่เหลือจากการใช้ แต่จงใช้เงินที่เหลือจากการเก็บ', by: 'Warren Buffett' },
   { en: 'Beware of little expenses; a small leak will sink a great ship.', th: 'ระวังรายจ่ายเล็กๆ น้อยๆ รูรั่วเพียงนิดก็ทำให้เรือใหญ่จมได้', by: 'Benjamin Franklin' },
@@ -1625,11 +1646,27 @@ const QUOTES = [
   { en: 'Little by little, a little becomes a lot.', th: 'น้ำซึมบ่อทราย — ทีละน้อย สะสมจนกลายเป็นมาก', by: 'สุภาษิต' },
   { en: 'Small daily improvements over time lead to stunning results.', th: 'การพัฒนาเล็กๆ ทุกวัน เมื่อเวลาผ่านไปจะให้ผลลัพธ์ที่น่าทึ่ง', by: 'Robin Sharma' }
 ];
-function quoteCfg() { return Object.assign({ random: false, idx: 0, custom: null }, store.get('quote', {})); }
-function quoteAt(i, cfg) { return i === -1 && cfg.custom ? cfg.custom : QUOTES[Math.max(0, i) % QUOTES.length]; }
-function quotePool(cfg) { return QUOTES.map((_, i) => i).concat(cfg.custom ? [-1] : []); }
-let shownQuote = 0;
+/* คำคมทั้งหมดเก็บในเครื่อง (แก้ไข / ลบ / เพิ่มได้ทุกข้อ) */
+function getQuotes() {
+  let list = store.get('quotes', null);
+  if (!Array.isArray(list) || !list.length) {
+    list = DEFAULT_QUOTES.map(q => Object.assign({}, q));
+    const old = store.get('quote', {});            // ย้ายคำคมที่เคยเขียนเองจากเวอร์ชันก่อน
+    if (old && old.custom) { list.push(old.custom); if (old.idx === -1) { old.idx = list.length - 1; delete old.custom; store.set('quote', old); } }
+    store.set('quotes', list);
+  }
+  return list;
+}
+function setQuotes(list) { store.set('quotes', list); }
+function quoteCfg() {
+  const c = Object.assign({ random: false, idx: 0 }, store.get('quote', {}));
+  const n = getQuotes().length;
+  if (!(c.idx >= 0 && c.idx < n)) c.idx = 0;
+  return c;
+}
+let shownQuote = 0, editingQuote = null;
 function showQuote(q) {
+  q = q || DEFAULT_QUOTES[0];
   $('sq-en').textContent = q.en || q.th || '';
   $('sq-th').textContent = q.en ? (q.th || '') : '';
   $('sq-th').style.display = $('sq-th').textContent ? '' : 'none';
@@ -1637,40 +1674,75 @@ function showQuote(q) {
   $('sq-by').style.display = q.by ? '' : 'none';
 }
 function pickSplashQuote() {
-  const cfg = quoteCfg(), pool = quotePool(cfg);
-  shownQuote = cfg.random ? pool[Math.floor(Math.random() * pool.length)] : cfg.idx;
-  showQuote(quoteAt(shownQuote, cfg));
+  const list = getQuotes(), cfg = quoteCfg();
+  shownQuote = cfg.random ? Math.floor(Math.random() * list.length) : cfg.idx;
+  showQuote(list[shownQuote]);
 }
 $('sp-quote').onclick = () => {   // แตะคำคมบนหน้าแรก = ดูคำคมถัดไป
-  const cfg = quoteCfg(), pool = quotePool(cfg);
-  shownQuote = pool[(pool.indexOf(shownQuote) + 1) % pool.length];
+  const list = getQuotes();
+  shownQuote = (shownQuote + 1) % list.length;
   const el = $('sp-quote'); el.style.transition = 'opacity .2s'; el.style.opacity = 0;
-  setTimeout(() => { showQuote(quoteAt(shownQuote, cfg)); el.style.opacity = 1; }, 200);
+  setTimeout(() => { showQuote(list[shownQuote]); el.style.opacity = 1; }, 200);
 };
 function renderQuoteList() {
-  const cfg = quoteCfg();
+  const list = getQuotes(), cfg = quoteCfg();
   $('q-random').checked = cfg.random;
-  const items = QUOTES.map((q, i) => ({ q, i })).concat(cfg.custom ? [{ q: cfg.custom, i: -1 }] : []);
-  $('q-list').innerHTML = items.map(({ q, i }) => {
-    const by = [q.by, i === -1 ? 'ของฉัน' : ''].filter(Boolean).join(' · ');
-    return `<button class="q-item ${!cfg.random && cfg.idx === i ? 'on' : ''}" data-i="${i}">
+  $('q-list').innerHTML = list.map((q, i) => `<div class="q-item ${!cfg.random && cfg.idx === i ? 'on' : ''}" data-i="${i}">
       <span class="check">✓</span>
-      <span><div class="q-en">${esc(q.en || q.th)}</div>${q.en && q.th ? `<div class="q-th">${esc(q.th)}</div>` : ''}${by ? `<div class="q-by">— ${esc(by)}</div>` : ''}</span>
-    </button>`;
-  }).join('');
-  $('q-list').querySelectorAll('.q-item').forEach(b => b.onclick = () => {
-    const c = quoteCfg(); c.idx = Number(b.dataset.i); c.random = false; store.set('quote', c);
+      <div class="q-body"><div class="q-en">${esc(q.en || q.th)}</div>${q.en && q.th ? `<div class="q-th">${esc(q.th)}</div>` : ''}${q.by ? `<div class="q-by">— ${esc(q.by)}</div>` : ''}</div>
+      <div class="q-acts">
+        <button data-act="edit" data-i="${i}" aria-label="แก้ไข">✏️</button>
+        <button data-act="del" data-i="${i}" aria-label="ลบ">🗑️</button>
+      </div>
+    </div>`).join('');
+  $('q-list').querySelectorAll('.q-item').forEach(el => el.onclick = e => {
+    const act = e.target.closest('[data-act]');
+    const i = Number(el.dataset.i);
+    if (act && act.dataset.act === 'edit') return openQuoteEditor(i);
+    if (act && act.dataset.act === 'del') return deleteQuote(i);
+    const c = quoteCfg(); c.idx = i; c.random = false; store.set('quote', c);
     renderQuoteList(); toast('ตั้งเป็นคำคมหน้าแรกแล้ว');
   });
-  if (cfg.custom) { $('q-en').value = cfg.custom.en || ''; $('q-th').value = cfg.custom.th || ''; $('q-by').value = cfg.custom.by || ''; }
+}
+function openQuoteEditor(i) {
+  editingQuote = i;
+  const q = i >= 0 ? getQuotes()[i] : { en: '', th: '', by: '' };
+  $('q-ed-title').textContent = i >= 0 ? 'แก้ไขคำคมข้อที่ ' + (i + 1) : 'เพิ่มคำคมใหม่';
+  $('q-en').value = q.en || ''; $('q-th').value = q.th || ''; $('q-by').value = q.by || '';
+  $('q-editor').classList.add('show');
+  setTimeout(() => { $('q-editor').scrollIntoView({ behavior: 'smooth', block: 'center' }); $('q-en').focus(); }, 60);
+}
+function closeQuoteEditor() { editingQuote = null; $('q-editor').classList.remove('show'); }
+function saveQuote() {
+  const en = $('q-en').value.trim(), th = $('q-th').value.trim(), by = $('q-by').value.trim();
+  if (!en && !th) { toast('กรุณาพิมพ์คำคม', true); $('q-en').focus(); return; }
+  const list = getQuotes(), q = { en: en || th, th: en ? th : '', by };
+  const c = quoteCfg();
+  if (editingQuote !== null && editingQuote >= 0) { list[editingQuote] = q; toast('แก้ไขคำคมแล้ว ✨'); }
+  else { list.push(q); c.idx = list.length - 1; c.random = false; store.set('quote', c); toast('เพิ่มคำคมและตั้งเป็นหน้าแรกแล้ว ✨'); }
+  setQuotes(list); closeQuoteEditor(); renderQuoteList();
+}
+function deleteQuote(i) {
+  const list = getQuotes();
+  if (list.length <= 1) { toast('ต้องมีคำคมอย่างน้อย 1 ข้อ', true); return; }
+  const q = list[i];
+  confirmModal('ลบคำคมนี้?', '“' + esc((q.en || q.th).slice(0, 80)) + '”', () => {
+    list.splice(i, 1); setQuotes(list);
+    const c = quoteCfg();
+    if (c.idx === i) c.idx = 0; else if (c.idx > i) c.idx--;
+    store.set('quote', c);
+    if (editingQuote === i) closeQuoteEditor();
+    renderQuoteList(); toast('ลบคำคมแล้ว');
+  });
+}
+function resetQuotes() {
+  confirmModal('คืนค่าคำคมเริ่มต้น?', 'คำคมที่แก้ไขหรือเพิ่มเองจะถูกแทนที่ด้วยชุดเริ่มต้น 8 ข้อ', () => {
+    setQuotes(DEFAULT_QUOTES.map(q => Object.assign({}, q)));
+    store.set('quote', { random: quoteCfg().random, idx: 0 });
+    closeQuoteEditor(); renderQuoteList(); toast('คืนค่าคำคมเริ่มต้นแล้ว');
+  });
 }
 $('q-random').onchange = e => { const c = quoteCfg(); c.random = e.target.checked; store.set('quote', c); renderQuoteList(); toast(c.random ? 'จะสุ่มคำคมทุกครั้งที่เปิดแอป' : 'ใช้คำคมที่เลือกไว้'); };
-function saveCustomQuote() {
-  const en = $('q-en').value.trim(), th = $('q-th').value.trim(), by = $('q-by').value.trim();
-  if (!en && !th) { toast('กรุณาพิมพ์คำคม', true); return; }
-  const c = quoteCfg(); c.custom = { en: en || th, th: en ? th : '', by }; c.idx = -1; c.random = false;
-  store.set('quote', c); renderQuoteList(); toast('ใช้คำคมของคุณแล้ว ✨');
-}
 renderQuoteList();
 
 /* ===================================================================
