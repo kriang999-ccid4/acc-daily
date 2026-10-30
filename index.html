@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#061229">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     /* ===================== THEMES ===================== */
@@ -342,6 +342,83 @@
     .budget-input .input { flex: 1; }
     .budget-input .btn-gold { width: auto; margin: 0; height: 48px; padding: 0 18px; font-size: 14.5px; }
 
+
+    /* ===================== SPLASH ===================== */
+    .splash {
+      position: fixed; inset: 0; z-index: 120; overflow: hidden;
+      background: var(--bg); background-image: var(--bg-grad);
+      display: flex; justify-content: center;
+      transition: opacity .55s ease, transform .55s cubic-bezier(.6,0,.3,1);
+    }
+    .splash.hide { opacity: 0; transform: translateY(-4%); pointer-events: none; }
+    .splash-inner {
+      width: 100%; max-width: 440px; height: 100%; position: relative;
+      display: flex; flex-direction: column; align-items: center;
+      padding: max(18px, env(safe-area-inset-top)) 26px max(18px, env(safe-area-inset-bottom));
+    }
+    .sp-beam {
+      position: absolute; top: -40px; left: 50%; width: 360px; height: 62%; transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(246,224,154,.30), rgba(212,175,55,.08) 55%, transparent);
+      clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+      filter: blur(14px); pointer-events: none; animation: beam 5s ease-in-out infinite;
+    }
+    @keyframes beam { 50% { opacity: .65; } }
+    .sp-spark { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--gold-hi);
+      box-shadow: 0 0 8px 2px rgba(246,224,154,.6); opacity: 0; animation: twinkle 3.6s ease-in-out infinite; }
+    @keyframes twinkle { 0%,100% { opacity: 0; transform: scale(.4); } 50% { opacity: .9; transform: scale(1); } }
+
+    .sp-stage { flex: 1 1 auto; min-height: 200px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3vh; position: relative; }
+    .coin-wrap { perspective: 900px; width: 150px; height: 150px; position: relative; z-index: 2; animation: floaty 4s ease-in-out infinite; }
+    @keyframes floaty { 50% { transform: translateY(-10px); } }
+    .coin3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: spin 7s linear infinite; }
+    @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+    .coin3d > * { position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; }
+    .coin3d .edge { backface-visibility: visible; background: linear-gradient(90deg, #6e5214, #c79a2c 30%, #f3d27a 50%, #b88a24 70%, #6e5214); }
+    .coin3d svg { width: 100%; height: 100%; display: block; }
+    .pedestal { position: relative; width: 210px; height: 54px; margin-top: 18px; }
+    .pedestal::before { content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(212,175,55,.55), rgba(212,175,55,.12) 60%, transparent);
+      filter: blur(6px); animation: pulse 4s ease-in-out infinite; }
+    .pedestal::after { content: ""; position: absolute; left: 14%; right: 14%; top: 26%; bottom: 26%; border-radius: 50%;
+      border: 1.5px solid rgba(246,224,154,.75); box-shadow: 0 0 18px rgba(212,175,55,.6), inset 0 0 12px rgba(212,175,55,.35); }
+    @keyframes pulse { 50% { opacity: .55; transform: scale(.92); } }
+
+    .sp-title { font-family: "Prompt"; font-weight: 600; font-size: 46px; letter-spacing: 1px; line-height: 1.1; margin: 14px 0 6px; text-align: center; }
+    .sp-sub { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13.5px; letter-spacing: .4px; }
+    .sp-sub::before, .sp-sub::after { content: ""; width: 26px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .sp-sub::after { transform: scaleX(-1); }
+
+    .sp-quote { text-align: center; margin: 26px 0 26px; padding: 0 6px; }
+    .sp-quote .en { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 18.5px; line-height: 1.45; color: var(--text); }
+    .sp-quote .en::before, .sp-quote .en::after { color: var(--gold); font-size: 22px; }
+    .sp-quote .en::before { content: "“"; margin-right: 2px; }
+    .sp-quote .en::after { content: "”"; margin-left: 2px; }
+    .sp-quote .th { font-size: 13px; color: var(--muted); margin-top: 8px; }
+    .sp-quote .by { font-family: "Prompt"; font-size: 12px; letter-spacing: 2.5px; color: var(--gold); margin-top: 10px; text-transform: uppercase; }
+
+    .slider { width: 100%; height: 62px; border-radius: 999px; position: relative; flex: none;
+      border: 1.5px solid transparent; background: linear-gradient(180deg, var(--surface-2), var(--surface)) padding-box, var(--gold-grad) border-box;
+      box-shadow: 0 10px 28px rgba(0,0,0,.35); touch-action: none; user-select: none; -webkit-user-select: none; }
+    .slider-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding-left: 50px;
+      font-family: "Prompt"; font-size: 15px; letter-spacing: .5px; color: transparent;
+      background: linear-gradient(90deg, rgba(246,224,154,.45) 0%, #fff6d6 50%, rgba(246,224,154,.45) 100%); background-size: 200% 100%;
+      -webkit-background-clip: text; background-clip: text; animation: shimmer 2.4s linear infinite; pointer-events: none; }
+    @keyframes shimmer { from { background-position: 200% 0; } to { background-position: 0 0; } }
+    .slider-fill { position: absolute; left: 4px; top: 4px; bottom: 4px; width: 52px; border-radius: 999px; background: rgba(212,175,55,.18); pointer-events: none; }
+    .slider-thumb { position: absolute; left: 4px; top: 4px; width: 52px; height: 52px; border-radius: 50%; border: 0;
+      background: var(--gold-grad); color: #1a1406; display: grid; place-items: center; cursor: grab;
+      box-shadow: 0 4px 14px rgba(212,175,55,.45); }
+    .slider-thumb svg { width: 24px; height: 24px; }
+    .slider.anim .slider-thumb, .slider.anim .slider-fill { transition: transform .3s ease, width .3s ease; }
+    .sp-status { font-size: 12px; color: var(--muted); height: 18px; margin-top: 10px; text-align: center; }
+    .sp-credit { font-family: "Prompt"; font-size: 11px; letter-spacing: 2px; color: var(--muted); opacity: .8; margin-top: 8px; text-align: center; }
+    .sp-credit b { font-weight: 500; color: var(--gold); letter-spacing: 1px; }
+    @media (max-height: 640px) {
+      .coin-wrap { width: 112px; height: 112px; } .pedestal { width: 170px; height: 42px; margin-top: 10px; }
+      .sp-title { font-size: 38px; margin-top: 8px; } .sp-quote { margin: 14px 0 16px; } .sp-quote .en { font-size: 16.5px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .coin3d, .coin-wrap, .sp-beam, .pedestal::before, .sp-spark, .slider-text { animation: none !important; } }
+
     /* ===================== MODAL / TOAST / LOADER ===================== */
     .modal { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(0,0,0,.6); backdrop-filter: blur(3px); }
     .modal.show { display: flex; }
@@ -375,6 +452,31 @@
   </style>
 </head>
 <body>
+<!-- ============ SPLASH ============ -->
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <div class="sp-beam"></div>
+    <div class="sp-stage" id="sp-stage">
+      <div class="coin-wrap"><div class="coin3d" id="coin3d"></div></div>
+      <div class="pedestal"></div>
+    </div>
+    <h1 class="sp-title gold-text">Acc Daily</h1>
+    <div class="sp-sub">บัญชีรายรับ – รายจ่าย ประจำวัน</div>
+    <div class="sp-quote">
+      <div class="en">Discipline is the bridge between goals and accomplishment.</div>
+      <div class="th">วินัยคือสะพานระหว่างเป้าหมายและความสำเร็จ</div>
+      <div class="by">— Jim Rohn</div>
+    </div>
+    <div class="slider" id="slider" role="button" tabindex="0" aria-label="เลื่อนเพื่อเริ่มต้นใช้งาน">
+      <div class="slider-fill" id="slider-fill"></div>
+      <div class="slider-text">เลื่อนเพื่อเริ่มต้น&nbsp;&nbsp;›››</div>
+      <button class="slider-thumb" id="slider-thumb" aria-label="เริ่มต้น"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="sp-status" id="sp-status"></div>
+    <div class="sp-credit">Design By <b>AjKriang Ai Expert</b></div>
+  </div>
+</div>
+
 <div class="app">
 
   <!-- ============ HEADER ============ -->
@@ -519,6 +621,10 @@
           <div><div class="t">ปิดหน้าต่างหลังบันทึก</div><div class="d">เมื่อเปิดผ่านแอป LINE</div></div>
           <label class="switch"><input type="checkbox" id="close-after"><i></i></label>
         </div>
+        <div class="set-row">
+          <div><div class="t">แสดงหน้าแรกเมื่อเปิดแอป</div><div class="d">หน้า Acc Daily พร้อมคำคม</div></div>
+          <label class="switch"><input type="checkbox" id="show-splash"><i></i></label>
+        </div>
         <div class="set-row" style="display:block">
           <div class="t">ชื่อผู้ใช้</div>
           <div class="d" id="set-user" style="margin-bottom:8px">ใช้แสดงคำทักทาย และบันทึกในคอลัมน์ "ผู้บันทึก"</div>
@@ -660,7 +766,7 @@ function run(fn, ...args) {
         if (j.ok) return resolve(j.data);
         const err = new Error(j.error || 'เกิดข้อผิดพลาด'); err.code = j.code; err.userId = j.userId;
         if (j.code === 'BAD_TOKEN' || j.code === 'NO_TOKEN') { relogin(); }
-        else if (j.code === 'FORBIDDEN') { showGate('forbidden', j.userId); }
+        else if (j.code === 'FORBIDDEN') { if (splash.open) state.pendingGate = ['forbidden', j.userId]; else showGate('forbidden', j.userId); }
         reject(err);
       })
       .catch(() => reject(new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ตรวจสอบอินเทอร์เน็ต')));
@@ -1193,17 +1299,90 @@ const Demo = (() => {
 })();
 
 /* ===================================================================
+   SPLASH
+   =================================================================== */
+const COIN_FACE = `<svg viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="cf1" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#fff3c4"/><stop offset=".35" stop-color="#f0cf6a"/><stop offset=".75" stop-color="#c99a2e"/><stop offset="1" stop-color="#8a6618"/></radialGradient>
+    <linearGradient id="cf2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a87f20"/><stop offset=".5" stop-color="#f6dc8a"/><stop offset="1" stop-color="#8a6618"/></linearGradient>
+    <radialGradient id="cf3" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".6" stop-color="#dcb24a"/><stop offset="1" stop-color="#a77d22"/></radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="url(#cf2)"/>
+  <circle cx="100" cy="100" r="90" fill="url(#cf1)"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#9c7a22" stroke-width="1.5" stroke-dasharray="2 5" opacity=".8"/>
+  <circle cx="100" cy="100" r="70" fill="url(#cf3)" stroke="#b08a2c" stroke-width="2"/>
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#fff3c4" stroke-width="1" opacity=".5" transform="translate(-1 -1)"/>
+  <text x="100" y="128" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="82" fill="#8a6618" opacity=".55" transform="translate(2 2)">฿</text>
+  <text x="100" y="128" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="82" fill="#fff0b8">฿</text>
+  <path d="M40 62 A70 70 0 0 1 120 32" stroke="#fffbe6" stroke-width="5" fill="none" stroke-linecap="round" opacity=".45"/>
+</svg>`;
+
+function buildCoin() {
+  const c = $('coin3d'), N = 14, T = 16;   // layers, thickness(px)
+  let h = '';
+  for (let i = 0; i < N; i++) {
+    const z = -T / 2 + (T * i) / (N - 1);
+    h += `<div class="edge" style="transform: translateZ(${z.toFixed(2)}px) scale(.985)"></div>`;
+  }
+  h += `<div style="transform: translateZ(${T / 2 + .5}px)">${COIN_FACE}</div>`;
+  h += `<div style="transform: rotateY(180deg) translateZ(${T / 2 + .5}px)">${COIN_FACE}</div>`;
+  c.innerHTML = h;
+  const st = $('sp-stage');
+  for (let i = 0; i < 9; i++) {
+    const d = document.createElement('i');
+    d.className = 'sp-spark';
+    d.style.left = (10 + Math.random() * 80) + '%';
+    d.style.top = (8 + Math.random() * 75) + '%';
+    d.style.animationDelay = (Math.random() * 3.6).toFixed(2) + 's';
+    st.appendChild(d);
+  }
+}
+
+const splash = { open: false };
+function hideSplash() {
+  if (!splash.open) return;
+  splash.open = false;
+  $('splash').classList.add('hide');
+  setTimeout(() => { $('splash').style.display = 'none'; }, 600);
+  if (state.pendingGate) { const g = state.pendingGate; state.pendingGate = null; showGate(g[0], g[1]); }
+}
+function initSlider() {
+  const sl = $('slider'), th = $('slider-thumb'), fill = $('slider-fill');
+  let startX = 0, dx = 0, drag = false;
+  const max = () => sl.clientWidth - th.clientWidth - 8;
+  const set = x => { th.style.transform = `translateX(${x}px)`; fill.style.width = (52 + x) + 'px'; };
+  const done = () => { sl.classList.add('anim'); set(max()); setTimeout(hideSplash, 260); };
+  th.addEventListener('pointerdown', e => { drag = true; startX = e.clientX; dx = 0; sl.classList.remove('anim'); th.setPointerCapture(e.pointerId); });
+  th.addEventListener('pointermove', e => { if (!drag) return; dx = Math.max(0, Math.min(max(), e.clientX - startX)); set(dx); });
+  const end = () => {
+    if (!drag) return; drag = false;
+    if (dx > max() * 0.7 || dx < 4) done();      // เลื่อนเกิน 70% หรือแตะปุ่ม = ไปต่อ
+    else { sl.classList.add('anim'); set(0); }
+  };
+  th.addEventListener('pointerup', end);
+  th.addEventListener('pointercancel', end);
+  sl.addEventListener('click', e => { if (e.target === sl) done(); });
+  sl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); done(); } });
+}
+function spStatus(t) { $('sp-status').textContent = t || ''; }
+
+$('show-splash').checked = store.get('splash', true);
+$('show-splash').onchange = e => store.set('splash', e.target.checked);
+
+/* ===================================================================
    START
    =================================================================== */
 applyTheme(store.get('theme', 'navy'));
+if (store.get('splash', true)) { splash.open = true; buildCoin(); initSlider(); }
+else $('splash').style.display = 'none';
 (async () => {
-  if (!LIVE) { $('demo-tag').innerHTML = '<span class="tag-demo">DEMO</span>'; load(''); return; }
-  loading(true, 'กำลังเข้าสู่ระบบ LINE...');
+  if (!LIVE) { $('demo-tag').innerHTML = '<span class="tag-demo">DEMO</span>'; load('', splash.open); return; }
+  if (splash.open) spStatus('กำลังเชื่อมต่อ LINE...'); else loading(true, 'กำลังเข้าสู่ระบบ LINE...');
   try {
-    if (await initLiff()) load('');
+    if (await initLiff()) { await load('', splash.open); spStatus(''); }
   } catch (e) {
-    loading(false);
-    showGate('error', errMsg(e));
+    loading(false); spStatus('');
+    if (splash.open) state.pendingGate = ['error', errMsg(e)]; else showGate('error', errMsg(e));
   }
 })();
 </script>
