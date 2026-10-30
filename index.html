@@ -18,7 +18,7 @@
       --text: #f6eedb;
       --muted: #9fb0d0;
       --track: rgba(255,255,255,.09);
-      --line-soft: rgba(212,175,55,.22);
+      --line-soft: rgba(var(--acc-rgb),.22);
       --shadow: 0 14px 34px rgba(0,0,0,.38);
       --header: linear-gradient(180deg, #0f2a5e 0%, #0a1d42 100%);
     }
@@ -31,18 +31,73 @@
       --text: #f5ecd6;
       --muted: #a39b88;
       --track: rgba(255,255,255,.08);
-      --line-soft: rgba(212,175,55,.2);
+      --line-soft: rgba(var(--acc-rgb),.2);
       --shadow: 0 14px 34px rgba(0,0,0,.6);
       --header: linear-gradient(180deg, #1b1915 0%, #0d0c0b 100%);
     }
-    :root {
+    /* สีเน้น (accent) — ธีมน้ำเงิน/ดำ ใช้ทอง */
+    :root, [data-theme="navy"], [data-theme="black"] {
       --gold: #d4af37;
       --gold-hi: #f6e09a;
       --gold-lo: #9c7a22;
+      --acc-rgb: 212,175,55;
+      --acc-hi-rgb: 246,224,154;
+      --on-acc: var(--on-acc);
       --gold-grad: linear-gradient(135deg, #f8e7a8 0%, #d9b54a 38%, #b08a2c 70%, #f1d27a 100%);
       --gold-text: linear-gradient(180deg, #fbeab0 0%, #e2bf55 55%, #b88f2c 100%);
-      --inc: #5cd6a1;
+      --c-hl: #fff3c4; --c-1: #f0cf6a; --c-2: #c99a2e; --c-3: #8a6618; --c-4: #f6dc8a; --c-5: #dcb24a; --c-sym: #fff0b8;
       --exp: #ff8f7e;
+    }
+    /* ===== Red Supercar ===== */
+    [data-theme="red"] {
+      --bg: #0b0b0d;
+      --bg-grad: radial-gradient(900px 520px at 50% -160px, #42170a 0%, #170e0c 45%, #0a0a0b 100%);
+      --surface: #141416;
+      --surface-2: #1c1c1f;
+      --surface-3: #27272b;
+      --text: #f5f2ef;
+      --muted: #aaa39e;
+      --track: rgba(255,255,255,.08);
+      --line-soft: rgba(255,90,31,.24);
+      --shadow: 0 14px 34px rgba(0,0,0,.6);
+      --header: linear-gradient(180deg, #1e1e21 0%, #0e0e10 100%);
+      --gold: #ff5a1f;
+      --gold-hi: #ffb08a;
+      --gold-lo: #b8280a;
+      --acc-rgb: 255,90,31;
+      --acc-hi-rgb: 255,176,138;
+      --on-acc: #ffffff;
+      --gold-grad: linear-gradient(135deg, #ffb27d 0%, #ff6a2b 35%, #d8300c 70%, #ff8a4c 100%);
+      --gold-text: linear-gradient(180deg, #ffd6c0 0%, #ff6d33 55%, #c92d0b 100%);
+      --c-hl: #ffe1d1; --c-1: #ff7a3d; --c-2: #d9360f; --c-3: #6e1505; --c-4: #ffb08a; --c-5: #ff6326; --c-sym: #fff3ec;
+      --exp: #ff5470;
+    }
+    /* ===== Silver Bronze ===== */
+    [data-theme="silver"] {
+      --bg: #16181c;
+      --bg-grad: radial-gradient(900px 520px at 50% -160px, #565c66 0%, #272a30 45%, #131417 100%);
+      --surface: #1f2226;
+      --surface-2: #282b31;
+      --surface-3: #33373e;
+      --text: #eef0f3;
+      --muted: #a6acb4;
+      --track: rgba(255,255,255,.09);
+      --line-soft: rgba(205,211,219,.22);
+      --shadow: 0 14px 34px rgba(0,0,0,.5);
+      --header: linear-gradient(180deg, #33373e 0%, #1b1d21 100%);
+      --gold: #c98a4e;
+      --gold-hi: #f0c79c;
+      --gold-lo: #8a5428;
+      --acc-rgb: 201,138,78;
+      --acc-hi-rgb: 240,199,156;
+      --on-acc: #241509;
+      --gold-grad: linear-gradient(135deg, #f3d0a8 0%, #cf8f52 38%, #94582a 70%, #e6b27e 100%);
+      --gold-text: linear-gradient(180deg, #f8e0c6 0%, #d4975c 55%, #9a5e2e 100%);
+      --c-hl: #ffe9d2; --c-1: #e0a46a; --c-2: #b0703a; --c-3: #5e3416; --c-4: #f0c79c; --c-5: #c88850; --c-sym: #fff3e6;
+      --exp: #ff8f7e;
+    }
+    :root {
+      --inc: #5cd6a1;
       --danger: #e5534b;
       --r: 20px;
       --tabbar-h: 74px;
@@ -91,7 +146,7 @@
       display: grid; place-items: center;
       background: radial-gradient(circle at 30% 25%, var(--surface-3), var(--surface));
       border: 1.5px solid var(--gold);
-      box-shadow: 0 0 0 3px rgba(212,175,55,.12), inset 0 0 10px rgba(212,175,55,.2);
+      box-shadow: 0 0 0 3px rgba(var(--acc-rgb),.12), inset 0 0 10px rgba(var(--acc-rgb),.2);
       font-family: "Prompt"; font-weight: 600; font-size: 19px;
     }
     .brand-title { font-family: "Prompt"; font-weight: 600; font-size: 17px; line-height: 1.15; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -105,9 +160,49 @@
       width: 30px; height: 30px; border-radius: 50%; border: 0; background: transparent;
       display: grid; place-items: center; color: var(--gold);
     }
-    .month-switch button:active { background: rgba(212,175,55,.15); }
+    .month-switch button:active { background: rgba(var(--acc-rgb),.15); }
     .month-switch button:disabled { opacity: .3; }
     .month-label { font-family: "Prompt"; font-size: 13.5px; font-weight: 500; min-width: 64px; text-align: center; }
+    .month-switch .date-btn { width: auto; height: 30px; border-radius: 999px; padding: 0 6px; display: flex; align-items: center; gap: 5px; color: var(--text); }
+    .date-btn svg { color: var(--gold); flex: none; }
+    .date-btn.day .month-label { color: var(--gold-hi); }
+    .monogram { cursor: pointer; padding: 0; transition: transform .2s; }
+    .monogram:active { transform: scale(.92); }
+
+    /* ===== Calendar popover ===== */
+    .cal-pop { position: fixed; inset: 0; z-index: 70; display: none; background: rgba(0,0,0,.45); backdrop-filter: blur(2px); }
+    .cal-pop.show { display: block; }
+    .cal-pop .cal-box { position: absolute; top: 70px; right: max(10px, calc(50% - 230px)); width: min(330px, calc(100% - 20px)); padding: 14px; animation: pop .2s ease; margin: 0; }
+    .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .cal-head button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-soft); background: transparent; color: var(--gold); font-size: 18px; }
+    .cal-head button:disabled { opacity: .3; }
+    .cal-title { font-family: "Prompt"; font-weight: 600; font-size: 16px; }
+    .cal-dow, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+    .cal-dow span { font-size: 11.5px; color: var(--muted); padding: 4px 0; font-family: "Prompt"; }
+    .cal-dow span:first-child { color: var(--exp); }
+    .cal-grid button { position: relative; height: 38px; margin: 2px; border-radius: 11px; border: 1px solid transparent; background: transparent; font-family: "Prompt"; font-size: 14px; color: var(--text); }
+    .cal-grid button:disabled { opacity: .25; }
+    .cal-grid button.today { border-color: var(--line-soft); color: var(--gold-hi); }
+    .cal-grid button.sel { background: var(--gold-grad); color: var(--on-acc); font-weight: 600; border-color: transparent; }
+    .cal-grid button i { position: absolute; left: 50%; bottom: 4px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--gold); }
+    .cal-grid button.sel i { background: var(--on-acc); }
+    .cal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .cal-actions button { height: 42px; border-radius: 12px; font-family: "Prompt"; font-size: 14px; }
+    .cal-actions .btn-gold { margin: 0; height: 42px; font-size: 14px; }
+    .day-chip { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 12px; padding: 9px 10px 9px 14px; border-radius: 14px; border: 1px solid var(--gold); background: rgba(var(--acc-rgb),.08); font-family: "Prompt"; font-size: 13.5px; }
+    .day-chip button { border: 0; background: var(--gold-grad); color: var(--on-acc); border-radius: 999px; padding: 4px 12px; font-size: 12.5px; font-weight: 600; font-family: "Prompt"; white-space: nowrap; }
+
+    /* ===== Quote picker ===== */
+    .q-list { display: flex; flex-direction: column; gap: 8px; max-height: 330px; overflow-y: auto; padding-right: 2px; }
+    .q-item { text-align: left; border: 1px solid var(--line-soft); background: rgba(0,0,0,.15); border-radius: 14px; padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start; }
+    .q-item.on { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(var(--acc-rgb),.15); background: rgba(var(--acc-rgb),.07); }
+    .q-item .q-en { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: 14px; line-height: 1.4; }
+    .q-item .q-th { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .q-item .q-by { font-family: "Prompt"; font-size: 11px; color: var(--gold); letter-spacing: 1.5px; margin-top: 4px; text-transform: uppercase; }
+    .q-item .check { margin-top: 2px; flex: none; }
+    .q-item.on .check { background: var(--gold-grad); border-color: transparent; color: var(--on-acc); }
+    .q-form { display: grid; gap: 8px; margin-top: 10px; }
+    .sp-quote { cursor: pointer; }
 
     /* ===================== LAYOUT ===================== */
     main { padding: 16px 14px 0; }
@@ -149,7 +244,7 @@
     .shine { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
     .shine::before {
       content: ""; position: absolute; top: -40%; right: -30%; width: 70%; height: 140%;
-      background: radial-gradient(closest-side, rgba(246,224,154,.13), transparent);
+      background: radial-gradient(closest-side, rgba(var(--acc-hi-rgb),.13), transparent);
     }
 
     /* ===================== GAUGE ===================== */
@@ -166,7 +261,7 @@
     }
     .target-pill .t { font-size: 13px; color: var(--muted); }
     .target-pill .v { font-family: "Prompt"; font-weight: 600; font-size: 18px; color: var(--gold-hi); }
-    .target-pill button { border: 0; background: var(--gold-grad); color: #1a1406; border-radius: 999px; font-size: 12px; padding: 4px 10px; font-weight: 600; }
+    .target-pill button { border: 0; background: var(--gold-grad); color: var(--on-acc); border-radius: 999px; font-size: 12px; padding: 4px 10px; font-weight: 600; }
     .seg-tabs { display: flex; gap: 8px; margin-bottom: 4px; }
 
     /* health */
@@ -174,7 +269,7 @@
     .health-row .lv { flex: 1; padding: 10px 14px; }
     .health-row .lv small { color: var(--muted); font-size: 12px; display: block; }
     .health-row .lv b { font-family: "Prompt"; font-size: 26px; font-weight: 600; }
-    .health-row .sc { background: var(--gold-grad); color: #1a1406; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-family: "Prompt"; }
+    .health-row .sc { background: var(--gold-grad); color: var(--on-acc); display: flex; align-items: center; gap: 8px; padding: 0 16px; font-family: "Prompt"; }
     .health-row .sc b { font-size: 30px; }
     .health-row .sc span { opacity: .7; border-left: 1.5px solid rgba(26,20,6,.4); padding-left: 8px; }
     .health-note { font-size: 12.5px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
@@ -182,7 +277,7 @@
     /* ===================== SEGMENTED ===================== */
     .seg { display: flex; background: rgba(0,0,0,.25); border: 1px solid var(--line-soft); border-radius: 14px; padding: 4px; gap: 4px; }
     .seg button { flex: 1; border: 0; background: transparent; padding: 9px 6px; border-radius: 10px; font-family: "Prompt"; font-size: 14px; color: var(--muted); transition: .2s; }
-    .seg button.on { background: var(--gold-grad); color: #1a1406; font-weight: 600; box-shadow: 0 4px 12px rgba(212,175,55,.25); }
+    .seg button.on { background: var(--gold-grad); color: var(--on-acc); font-weight: 600; box-shadow: 0 4px 12px rgba(var(--acc-rgb),.25); }
 
     /* ===================== DONUT ===================== */
     .donut-box { position: relative; width: 100%; max-width: 320px; aspect-ratio: 1; margin: 6px auto 4px; }
@@ -228,7 +323,7 @@
     .tx-amt.inc { color: var(--inc); }
     .tx-amt.exp { color: var(--exp); }
     .tx-amt small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
-    .tx.clickable:active { background: rgba(212,175,55,.06); }
+    .tx.clickable:active { background: rgba(var(--acc-rgb),.06); }
     .empty { text-align: center; color: var(--muted); padding: 26px 10px; font-size: 14px; }
     .empty .ic { font-size: 34px; display: block; margin-bottom: 6px; opacity: .8; }
 
@@ -250,12 +345,12 @@
     .tab { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: var(--muted); font-family: "Prompt"; padding: 6px 0; }
     .tab svg { width: 24px; height: 24px; }
     .tab.on { color: var(--gold-hi); }
-    .tab.on svg { filter: drop-shadow(0 0 6px rgba(212,175,55,.5)); }
+    .tab.on svg { filter: drop-shadow(0 0 6px rgba(var(--acc-rgb),.5)); }
     .fab-slot { display: flex; justify-content: center; }
     .fab {
       width: 62px; height: 62px; border-radius: 50%; border: 0; margin-top: -30px;
-      background: var(--gold-grad); color: #1a1406;
-      box-shadow: 0 0 0 5px var(--bg), 0 10px 24px rgba(212,175,55,.35);
+      background: var(--gold-grad); color: var(--on-acc);
+      box-shadow: 0 0 0 5px var(--bg), 0 10px 24px rgba(var(--acc-rgb),.35);
       display: grid; place-items: center;
     }
     .fab svg { width: 30px; height: 30px; }
@@ -293,13 +388,13 @@
     .chip { border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 2px; font-size: 11.5px; color: var(--muted); line-height: 1.25; text-align: center; }
     .chip .emo { width: 50px; height: 50px; font-size: 22px; border-color: var(--line-soft); transition: .2s; }
     .chip.on { color: var(--gold-hi); }
-    .chip.on .emo { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.2), 0 0 14px rgba(212,175,55,.35); background: radial-gradient(circle at 30% 25%, #3a3220, var(--surface)); }
+    .chip.on .emo { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--acc-rgb),.2), 0 0 14px rgba(var(--acc-rgb),.35); background: radial-gradient(circle at 30% 25%, rgba(var(--acc-rgb),.28), var(--surface)); }
     .input {
       width: 100%; height: 48px; border-radius: 14px; padding: 0 14px;
       background: rgba(0,0,0,.25); border: 1px solid var(--line-soft); color: var(--text);
       font-family: inherit; font-size: 15px; outline: none; transition: .2s;
     }
-    .input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
+    .input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--acc-rgb),.15); }
     input[type="date"].input { color-scheme: dark; }
     input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     input[type=number] { -moz-appearance: textfield; }
@@ -307,12 +402,12 @@
 
     .btn-gold {
       width: 100%; height: 52px; border: 0; border-radius: 15px; margin-top: 18px;
-      background: var(--gold-grad); color: #1a1406; font-family: "Prompt"; font-weight: 600; font-size: 16px;
-      box-shadow: 0 8px 20px rgba(212,175,55,.25); letter-spacing: .3px;
+      background: var(--gold-grad); color: var(--on-acc); font-family: "Prompt"; font-weight: 600; font-size: 16px;
+      box-shadow: 0 8px 20px rgba(var(--acc-rgb),.25); letter-spacing: .3px;
     }
     .btn-gold:disabled { opacity: .6; }
     .btn-outline {
-      width: 100%; height: 48px; border-radius: 14px; border: 1px dashed var(--gold); background: rgba(212,175,55,.06);
+      width: 100%; height: 48px; border-radius: 14px; border: 1px dashed var(--gold); background: rgba(var(--acc-rgb),.06);
       color: var(--gold-hi); font-family: "Prompt"; font-size: 14.5px; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-outline svg { width: 20px; height: 20px; }
@@ -320,14 +415,14 @@
     /* ===================== SETTINGS ===================== */
     .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .theme-card { border: 1.5px solid var(--line-soft); background: none; border-radius: 16px; padding: 8px; text-align: left; transition: .2s; }
-    .theme-card.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.18); }
-    .theme-prev { height: 92px; border-radius: 11px; padding: 10px; position: relative; overflow: hidden; border: 1px solid rgba(212,175,55,.5); }
+    .theme-card.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--acc-rgb),.18); }
+    .theme-prev { height: 92px; border-radius: 11px; padding: 10px; position: relative; overflow: hidden; border: 1px solid rgba(var(--acc-rgb),.5); background: var(--bg-grad); }
     .theme-prev .bar1 { height: 10px; width: 55%; border-radius: 5px; background: var(--gold-grad); }
-    .theme-prev .bar2 { height: 26px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(212,175,55,.6); }
+    .theme-prev .bar2 { height: 26px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(var(--acc-rgb),.6); background: var(--surface-2); }
     .theme-prev .circ { position: absolute; right: 10px; bottom: 10px; width: 26px; height: 26px; border-radius: 50%; background: var(--gold-grad); }
     .theme-name { font-family: "Prompt"; font-size: 14px; margin: 8px 4px 2px; display: flex; justify-content: space-between; align-items: center; }
     .check { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line-soft); display: grid; place-items: center; font-size: 12px; }
-    .theme-card.on .check { background: var(--gold-grad); border-color: transparent; color: #1a1406; }
+    .theme-card.on .check { background: var(--gold-grad); border-color: transparent; color: var(--on-acc); }
     .set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
     .set-row + .set-row { border-top: 1px solid var(--line-soft); }
     .set-row .t { font-weight: 500; }
@@ -337,7 +432,7 @@
     .switch i { position: absolute; inset: 0; border-radius: 99px; background: var(--track); border: 1px solid var(--line-soft); transition: .2s; }
     .switch i::after { content: ""; position: absolute; width: 22px; height: 22px; left: 2px; top: 2px; border-radius: 50%; background: #cfc6b0; transition: .2s; }
     .switch input:checked + i { background: var(--gold-grad); }
-    .switch input:checked + i::after { left: 24px; background: #1a1406; }
+    .switch input:checked + i::after { left: 24px; background: var(--on-acc); }
     .budget-input { display: flex; gap: 8px; }
     .budget-input .input { flex: 1; }
     .budget-input .btn-gold { width: auto; margin: 0; height: 48px; padding: 0 18px; font-size: 14.5px; }
@@ -358,13 +453,13 @@
     }
     .sp-beam {
       position: absolute; top: -40px; left: 50%; width: 360px; height: 62%; transform: translateX(-50%);
-      background: linear-gradient(180deg, rgba(246,224,154,.30), rgba(212,175,55,.08) 55%, transparent);
+      background: linear-gradient(180deg, rgba(var(--acc-hi-rgb),.30), rgba(var(--acc-rgb),.08) 55%, transparent);
       clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
       filter: blur(14px); pointer-events: none; animation: beam 5s ease-in-out infinite;
     }
     @keyframes beam { 50% { opacity: .65; } }
     .sp-spark { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--gold-hi);
-      box-shadow: 0 0 8px 2px rgba(246,224,154,.6); opacity: 0; animation: twinkle 3.6s ease-in-out infinite; }
+      box-shadow: 0 0 8px 2px rgba(var(--acc-hi-rgb),.6); opacity: 0; animation: twinkle 3.6s ease-in-out infinite; }
     @keyframes twinkle { 0%,100% { opacity: 0; transform: scale(.4); } 50% { opacity: .9; transform: scale(1); } }
 
     .sp-stage { flex: 1 1 auto; min-height: 200px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3vh; position: relative; }
@@ -373,14 +468,14 @@
     .coin3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: spin 7s linear infinite; }
     @keyframes spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
     .coin3d > * { position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; }
-    .coin3d .edge { backface-visibility: visible; background: linear-gradient(90deg, #6e5214, #c79a2c 30%, #f3d27a 50%, #b88a24 70%, #6e5214); }
+    .coin3d .edge { backface-visibility: visible; background: linear-gradient(90deg, var(--c-3), var(--c-2) 30%, var(--c-4) 50%, var(--c-2) 70%, var(--c-3)); }
     .coin3d svg { width: 100%; height: 100%; display: block; }
     .pedestal { position: relative; width: 210px; height: 54px; margin-top: 18px; }
     .pedestal::before { content: ""; position: absolute; inset: 0; border-radius: 50%;
-      background: radial-gradient(closest-side, rgba(212,175,55,.55), rgba(212,175,55,.12) 60%, transparent);
+      background: radial-gradient(closest-side, rgba(var(--acc-rgb),.55), rgba(var(--acc-rgb),.12) 60%, transparent);
       filter: blur(6px); animation: pulse 4s ease-in-out infinite; }
     .pedestal::after { content: ""; position: absolute; left: 14%; right: 14%; top: 26%; bottom: 26%; border-radius: 50%;
-      border: 1.5px solid rgba(246,224,154,.75); box-shadow: 0 0 18px rgba(212,175,55,.6), inset 0 0 12px rgba(212,175,55,.35); }
+      border: 1.5px solid rgba(var(--acc-hi-rgb),.75); box-shadow: 0 0 18px rgba(var(--acc-rgb),.6), inset 0 0 12px rgba(var(--acc-rgb),.35); }
     @keyframes pulse { 50% { opacity: .55; transform: scale(.92); } }
 
     .sp-title { font-family: "Prompt"; font-weight: 600; font-size: 46px; letter-spacing: 1px; line-height: 1.1; margin: 14px 0 6px; text-align: center; }
@@ -401,13 +496,13 @@
       box-shadow: 0 10px 28px rgba(0,0,0,.35); touch-action: none; user-select: none; -webkit-user-select: none; }
     .slider-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding-left: 50px;
       font-family: "Prompt"; font-size: 15px; letter-spacing: .5px; color: transparent;
-      background: linear-gradient(90deg, rgba(246,224,154,.45) 0%, #fff6d6 50%, rgba(246,224,154,.45) 100%); background-size: 200% 100%;
+      background: linear-gradient(90deg, rgba(var(--acc-hi-rgb),.45) 0%, var(--gold-hi) 50%, rgba(var(--acc-hi-rgb),.45) 100%); background-size: 200% 100%;
       -webkit-background-clip: text; background-clip: text; animation: shimmer 2.4s linear infinite; pointer-events: none; }
     @keyframes shimmer { from { background-position: 200% 0; } to { background-position: 0 0; } }
-    .slider-fill { position: absolute; left: 4px; top: 4px; bottom: 4px; width: 52px; border-radius: 999px; background: rgba(212,175,55,.18); pointer-events: none; }
+    .slider-fill { position: absolute; left: 4px; top: 4px; bottom: 4px; width: 52px; border-radius: 999px; background: rgba(var(--acc-rgb),.18); pointer-events: none; }
     .slider-thumb { position: absolute; left: 4px; top: 4px; width: 52px; height: 52px; border-radius: 50%; border: 0;
-      background: var(--gold-grad); color: #1a1406; display: grid; place-items: center; cursor: grab;
-      box-shadow: 0 4px 14px rgba(212,175,55,.45); }
+      background: var(--gold-grad); color: var(--on-acc); display: grid; place-items: center; cursor: grab;
+      box-shadow: 0 4px 14px rgba(var(--acc-rgb),.45); }
     .slider-thumb svg { width: 24px; height: 24px; }
     .slider.anim .slider-thumb, .slider.anim .slider-fill { transition: transform .3s ease, width .3s ease; }
     .sp-status { font-size: 12px; color: var(--muted); height: 18px; margin-top: 10px; text-align: center; }
@@ -442,7 +537,7 @@
 
     .loader { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); font-family: "Prompt"; }
     .loader.show { display: flex; }
-    .spinner { width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(212,175,55,.2); border-top-color: var(--gold); animation: spin .9s linear infinite; }
+    .spinner { width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(var(--acc-rgb),.2); border-top-color: var(--gold); animation: spin .9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .skeleton { border-radius: 12px; height: 18px; background: linear-gradient(90deg, var(--track), rgba(255,255,255,.14), var(--track)); background-size: 200% 100%; animation: sk 1.2s infinite; }
@@ -462,10 +557,10 @@
     </div>
     <h1 class="sp-title gold-text">Acc Daily</h1>
     <div class="sp-sub">บัญชีรายรับ – รายจ่าย ประจำวัน</div>
-    <div class="sp-quote">
-      <div class="en">Discipline is the bridge between goals and accomplishment.</div>
-      <div class="th">วินัยคือสะพานระหว่างเป้าหมายและความสำเร็จ</div>
-      <div class="by">— Jim Rohn</div>
+    <div class="sp-quote" id="sp-quote" title="แตะเพื่อดูคำคมถัดไป">
+      <div class="en" id="sq-en">Discipline is the bridge between goals and accomplishment.</div>
+      <div class="th" id="sq-th">วินัยคือสะพานระหว่างเป้าหมายและความสำเร็จ</div>
+      <div class="by" id="sq-by">— Jim Rohn</div>
     </div>
     <div class="slider" id="slider" role="button" tabindex="0" aria-label="เลื่อนเพื่อเริ่มต้นใช้งาน">
       <div class="slider-fill" id="slider-fill"></div>
@@ -483,16 +578,16 @@
   <header class="topbar">
     <div class="topbar-row">
       <div class="brand">
-        <div class="monogram"><span class="gold-text">฿</span></div>
+        <button class="monogram" id="home-logo" aria-label="กลับไปหน้าแรก" title="กลับไปหน้าแรก"><span class="gold-text">฿</span></button>
         <div style="min-width:0">
           <div class="brand-title"><span id="page-title">บัญชีรายวัน</span><span id="demo-tag"></span></div>
           <div class="brand-sub" id="user-display">รายรับ · รายจ่าย</div>
         </div>
       </div>
       <div class="month-switch">
-        <button id="m-prev" aria-label="เดือนก่อน"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="month-label" id="month-label">—</div>
-        <button id="m-next" aria-label="เดือนถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button id="m-prev" aria-label="ก่อนหน้า"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="date-btn" id="date-btn" aria-label="เลือกวันที่"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="month-label" id="month-label">—</span></button>
+        <button id="m-next" aria-label="ถัดไป"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
     </div>
   </header>
@@ -500,9 +595,10 @@
   <main>
     <!-- ============ HOME ============ -->
     <section class="page active" id="page-home">
+      <div id="home-chip"></div>
       <div class="card lux">
         <div class="shine"></div>
-        <div class="bal-label"><span>คงเหลือเดือนนี้</span><span id="bal-all"></span></div>
+        <div class="bal-label"><span id="bal-title">คงเหลือเดือนนี้</span><span id="bal-all"></span></div>
         <div class="bal-amount gold-text" id="bal-month"><small>฿</small>0</div>
         <div class="bal-grid">
           <div>
@@ -549,7 +645,7 @@
 
       <div class="card">
         <div class="card-head">
-          <div class="card-title">รายการล่าสุด</div>
+          <div class="card-title" id="recent-title">รายการล่าสุด</div>
           <button class="link-btn" onclick="go('list')">ดูทั้งหมด ›</button>
         </div>
         <div id="recent" class="tx-list" style="margin:0 -12px -8px"></div>
@@ -562,6 +658,7 @@
         <button class="on" data-ana="exp">ค่าใช้จ่าย</button>
         <button data-ana="inc">รายรับ</button>
       </div>
+      <div id="ana-chip"></div>
       <div class="card lux">
         <div class="card-head"><div class="card-title">ตามหมวดหมู่</div><span class="muted" style="font-size:13px" id="ana-count"></span></div>
         <div class="donut-box" id="donut-box">
@@ -583,6 +680,7 @@
         <button data-flt="exp">รายจ่าย</button>
         <button data-flt="inc">รายรับ</button>
       </div>
+      <div id="list-chip" style="margin-top:10px"></div>
       <div id="tx-groups"></div>
       <p class="muted" style="text-align:center;font-size:12px;margin:14px 0">แตะที่รายการเพื่อลบ</p>
     </section>
@@ -593,18 +691,40 @@
         <div class="card-head"><div class="card-title">ธีมแอป</div></div>
         <div class="theme-grid">
           <button class="theme-card" data-theme-pick="navy">
-            <div class="theme-prev" style="background:radial-gradient(circle at 50% -20%, #1b3c7a, #061229)">
-              <div class="bar1"></div><div class="bar2" style="background:#12295a"></div><div class="circ"></div>
-            </div>
+            <div class="theme-prev" data-theme="navy"><div class="bar1"></div><div class="bar2"></div><div class="circ"></div></div>
             <div class="theme-name"><span>น้ำเงินขอบทอง</span><span class="check">✓</span></div>
           </button>
           <button class="theme-card" data-theme-pick="black">
-            <div class="theme-prev" style="background:radial-gradient(circle at 50% -20%, #2a241a, #060606)">
-              <div class="bar1"></div><div class="bar2" style="background:#1a1917"></div><div class="circ"></div>
-            </div>
+            <div class="theme-prev" data-theme="black"><div class="bar1"></div><div class="bar2"></div><div class="circ"></div></div>
             <div class="theme-name"><span>ดำทองหรู</span><span class="check">✓</span></div>
           </button>
+          <button class="theme-card" data-theme-pick="red">
+            <div class="theme-prev" data-theme="red"><div class="bar1"></div><div class="bar2"></div><div class="circ"></div></div>
+            <div class="theme-name"><span>Red Supercar</span><span class="check">✓</span></div>
+          </button>
+          <button class="theme-card" data-theme-pick="silver">
+            <div class="theme-prev" data-theme="silver"><div class="bar1"></div><div class="bar2"></div><div class="circ"></div></div>
+            <div class="theme-name"><span>Silver Bronze</span><span class="check">✓</span></div>
+          </button>
         </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">คำคมหน้าแรก</div><button class="link-btn" onclick="showSplash()">ดูตัวอย่าง ›</button></div>
+        <div class="set-row" style="padding-top:0">
+          <div><div class="t">สุ่มคำคมทุกครั้งที่เปิด</div><div class="d">หรือเลือกคำคมที่ชอบด้านล่าง</div></div>
+          <label class="switch"><input type="checkbox" id="q-random"><i></i></label>
+        </div>
+        <div class="q-list" id="q-list"></div>
+        <details style="margin-top:12px">
+          <summary class="prompt" style="cursor:pointer;color:var(--gold);font-size:14px">✍️ เขียนคำคมของคุณเอง</summary>
+          <div class="q-form">
+            <input class="input" id="q-en" maxlength="160" placeholder="คำคม (ภาษาอังกฤษหรือภาษาไทย)">
+            <input class="input" id="q-th" maxlength="160" placeholder="คำแปล / ความหมาย (ไม่บังคับ)">
+            <input class="input" id="q-by" maxlength="60" placeholder="ผู้กล่าว (ไม่บังคับ)">
+            <button class="btn-gold" style="margin-top:2px" onclick="saveCustomQuote()">ใช้คำคมนี้</button>
+          </div>
+        </details>
       </div>
 
       <div class="card">
@@ -624,6 +744,10 @@
         <div class="set-row">
           <div><div class="t">แสดงหน้าแรกเมื่อเปิดแอป</div><div class="d">หน้า Acc Daily พร้อมคำคม</div></div>
           <label class="switch"><input type="checkbox" id="show-splash"><i></i></label>
+        </div>
+        <div class="set-row">
+          <div><div class="t">กลับไปหน้าแรก</div><div class="d">หรือแตะโลโก้ ฿ มุมซ้ายบน</div></div>
+          <button class="btn-gold" style="width:auto;height:38px;margin:0;padding:0 16px;font-size:13.5px" onclick="showSplash()">เปิด</button>
         </div>
         <div class="set-row" style="display:block">
           <div class="t">ชื่อผู้ใช้</div>
@@ -700,6 +824,21 @@
 </div>
 
 <!-- ============ MODAL / TOAST / LOADER ============ -->
+<div class="cal-pop" id="cal-pop">
+  <div class="card lux cal-box" id="cal-box">
+    <div class="cal-head">
+      <button id="cal-prev" aria-label="เดือนก่อน">‹</button>
+      <div class="cal-title" id="cal-title"></div>
+      <button id="cal-next" aria-label="เดือนถัดไป">›</button>
+    </div>
+    <div class="cal-dow"><span>อา</span><span>จ</span><span>อ</span><span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span></div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-actions">
+      <button class="btn-ghost" id="cal-today">วันนี้</button>
+      <button class="btn-gold" id="cal-month">ดูทั้งเดือน</button>
+    </div>
+  </div>
+</div>
 <div class="modal" id="modal">
   <div class="card lux modal-box">
     <div style="font-size:34px" id="modal-emo">🗑️</div>
@@ -799,10 +938,16 @@ function errMsg(e) { return (e && e.message ? e.message : String(e)).replace(/^E
 /* ===================================================================
    THEME
    =================================================================== */
+const THEMES = {
+  navy:   { name: 'น้ำเงินขอบทอง', meta: '#061229' },
+  black:  { name: 'ดำทองหรู',     meta: '#060606' },
+  red:    { name: 'Red Supercar', meta: '#0b0b0d' },
+  silver: { name: 'Silver Bronze', meta: '#16181c' }
+};
 function applyTheme(t) {
-  t = t === 'black' ? 'black' : 'navy';
+  t = THEMES[t] ? t : 'navy';
   document.documentElement.setAttribute('data-theme', t);
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'black' ? '#060606' : '#061229');
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', THEMES[t].meta);
   document.querySelectorAll('[data-theme-pick]').forEach(b => b.classList.toggle('on', b.dataset.themePick === t));
   state.settings.theme = t;
   store.set('theme', t);
@@ -810,7 +955,8 @@ function applyTheme(t) {
 document.querySelectorAll('[data-theme-pick]').forEach(b => b.onclick = () => {
   applyTheme(b.dataset.themePick);
   run('saveSettings', { theme: state.settings.theme }).catch(() => {});
-  toast('เปลี่ยนธีมเป็น ' + (state.settings.theme === 'black' ? 'ดำทองหรู' : 'น้ำเงินขอบทอง'));
+  toast('เปลี่ยนธีมเป็น ' + THEMES[state.settings.theme].name);
+  if (state.data) renderAll();
 });
 
 /* ===================================================================
@@ -825,8 +971,10 @@ function go(p) {
   if (p === 'analysis') renderAnalysis();
 }
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
-$('m-prev').onclick = () => load(shiftYm(state.ym, -1));
-$('m-next').onclick = () => load(shiftYm(state.ym, 1));
+$('m-prev').onclick = () => { if (state.day) shiftDay(-1); else load(shiftYm(state.ym, -1)); };
+$('m-next').onclick = () => { if (state.day) shiftDay(1); else load(shiftYm(state.ym, 1)); };
+$('date-btn').onclick = () => openCal();
+$('home-logo').onclick = () => showSplash();
 document.querySelectorAll('[data-ana]').forEach(b => b.onclick = () => {
   state.ana = b.dataset.ana;
   document.querySelectorAll('[data-ana]').forEach(x => x.classList.toggle('on', x === b));
@@ -849,7 +997,7 @@ async function load(ym, silent) {
     if (d.categories) state.cats = d.categories;
     if (d.settings) {
       state.settings = Object.assign(state.settings, d.settings);
-      if (d.settings.theme && d.settings.theme !== document.documentElement.dataset.theme) applyTheme(d.settings.theme);
+      if (store.get('theme', null) === null && THEMES[d.settings.theme] && d.settings.theme !== document.documentElement.dataset.theme) applyTheme(d.settings.theme);
     }
     renderAll();
   } catch (e) {
@@ -859,8 +1007,12 @@ async function load(ym, silent) {
 
 function renderAll() {
   const d = state.data;
-  $('month-label').textContent = ymLabel(d.ym);
-  $('m-next').disabled = d.ym >= d.todayKey.slice(0, 7);
+  if (state.day && state.day.slice(0, 7) !== d.ym) state.day = null;
+  $('month-label').textContent = state.day ? dayLabel(state.day, true) : ymLabel(d.ym);
+  $('date-btn').classList.toggle('day', !!state.day);
+  $('m-next').disabled = state.day ? state.day >= d.todayKey : d.ym >= d.todayKey.slice(0, 7);
+  const chip = state.day ? `<div class="day-chip"><span>📅 แสดงเฉพาะ${dayLabel(state.day)}</span><button onclick="clearDay()">ดูทั้งเดือน</button></div>` : '';
+  ['home-chip', 'ana-chip', 'list-chip'].forEach(id => $(id).innerHTML = chip);
   $('budget').value = state.settings.dailyBudget || '';
   renderHome(); renderList();
   if ($('page-analysis').classList.contains('active')) renderAnalysis();
@@ -869,9 +1021,37 @@ function renderAll() {
 /* ===================================================================
    HOME
    =================================================================== */
+function dayTx(key) { return state.data.tx.filter(t => t.date.slice(0, 10) === key); }
+function sumTx(list) { const r = { income: 0, expense: 0 }; list.forEach(t => r[t.type === 'inc' ? 'income' : 'expense'] += t.amount); return r; }
+/* "วันศุกร์ที่ 30 ต.ค. 2569" / "วันนี้ 30 ต.ค. 2569" ; short = "30 ต.ค. 69" */
+function dayLabel(key, short) {
+  const [y, m, d] = key.split('-').map(Number);
+  if (short) return d + ' ' + TH_MON_S[m - 1] + ' ' + String(y + 543).slice(-2);
+  const today = state.data && state.data.todayKey === key;
+  return (today ? 'วันนี้ ' : 'วัน' + TH_DAY[new Date(y, m - 1, d).getDay()] + 'ที่ ') + d + ' ' + TH_MON_S[m - 1] + ' ' + (y + 543);
+}
+function clearDay() { state.day = null; renderAll(); }
+async function setDay(key) {
+  state.day = key;
+  if (key.slice(0, 7) !== state.ym) await load(key.slice(0, 7));
+  else renderAll();
+}
+function shiftDay(k) {
+  const [y, m, d] = state.day.split('-').map(Number);
+  const dt = new Date(y, m - 1, d + k);
+  const key = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+  if (state.data && key > state.data.todayKey) return;
+  setDay(key);
+}
+
 function renderHome() {
-  const d = state.data, m = d.month;
+  const d = state.data;
+  const dayMode = !!state.day;
+  const dtx = dayMode ? dayTx(state.day) : null;
+  const m = dayMode ? sumTx(dtx) : d.month;
   const bal = m.income - m.expense;
+  const isToday = dayMode && state.day === d.todayKey;
+  $('bal-title').textContent = dayMode ? (isToday ? 'คงเหลือวันนี้' : 'คงเหลือวันที่ ' + Number(state.day.slice(8)) + ' ' + TH_MON_S[Number(state.day.slice(5, 7)) - 1]) : 'คงเหลือเดือนนี้';
   $('bal-month').innerHTML = '<small>฿</small>' + (bal < 0 ? '-' : '') + fmt(Math.abs(bal));
   $('bal-inc').textContent = fmt(m.income);
   $('bal-exp').textContent = fmt(m.expense);
@@ -880,10 +1060,16 @@ function renderHome() {
   // daily gauge
   const budget = Number(state.settings.dailyBudget) || 0;
   let spent, label;
-  if (d.isCurrentMonth) { spent = d.today.expense; label = 'ค่าใช้จ่ายวันนี้'; }
-  else { spent = m.expense / d.daysInMonth; label = 'เฉลี่ยต่อวัน'; }
+  let title;
+  if (dayMode) {
+    spent = m.expense;
+    label = isToday ? 'ค่าใช้จ่ายวันนี้' : 'ค่าใช้จ่ายวันที่ ' + Number(state.day.slice(8));
+    title = isToday ? 'ค่าใช้จ่ายวันนี้' : 'ค่าใช้จ่าย' + dayLabel(state.day);
+  }
+  else if (d.isCurrentMonth) { spent = d.today.expense; label = 'ค่าใช้จ่ายวันนี้'; title = 'ค่าใช้จ่ายวันนี้'; }
+  else { spent = d.month.expense / d.daysInMonth; label = 'เฉลี่ยต่อวัน'; title = 'ค่าใช้จ่ายเฉลี่ยต่อวัน · ' + TH_MONTH[Number(d.ym.slice(5)) - 1]; }
   const pct = budget > 0 ? spent / budget : 0;
-  $('gauge-title').textContent = d.isCurrentMonth ? 'ค่าใช้จ่ายวันนี้' : 'ค่าใช้จ่ายเฉลี่ยต่อวัน · ' + TH_MONTH[Number(d.ym.slice(5)) - 1];
+  $('gauge-title').textContent = title;
   $('g-lbl').textContent = label;
   $('g-amt').textContent = fmt(spent, spent % 1 ? 0 : undefined);
   $('g-sub').innerHTML = budget > 0 ? (pct > 1 ? '<span style="color:var(--exp)">เกินเป้า ' + fmt((pct - 1) * 100, 1) + '%</span>' : 'ใช้ไป ' + fmt(pct * 100, 1) + '%') : 'ยังไม่ได้ตั้งเป้าหมาย';
@@ -891,14 +1077,16 @@ function renderHome() {
   drawTickGauge($('day-gauge'), Math.min(pct, 1), pct > 1);
 
   // health
-  const h = healthScore(m.income, m.expense);
+  const h = healthScore(d.month.income, d.month.expense);
   drawHealthGauge($('health-gauge'), h.score);
   $('h-score').textContent = fmt(h.score, h.score % 1 ? 1 : 0);
   $('h-level').textContent = h.level;
   $('h-note').textContent = h.note;
 
   // recent
-  $('recent').innerHTML = d.tx.length ? d.tx.slice(0, 5).map(txRow).join('') : emptyBox('ยังไม่มีรายการในเดือนนี้', '🧾');
+  $('recent-title').textContent = dayMode ? (isToday ? 'รายการวันนี้' : 'รายการวันที่ ' + Number(state.day.slice(8))) : 'รายการล่าสุด';
+  const rl = dayMode ? dtx : d.tx.slice(0, 5);
+  $('recent').innerHTML = rl.length ? rl.map(txRow).join('') : emptyBox(dayMode ? 'ไม่มีรายการในวันนี้' : 'ยังไม่มีรายการในเดือนนี้', '🧾');
   bindTxClicks($('recent'));
 }
 
@@ -930,7 +1118,7 @@ function drawTickGauge(svg, pct, over) {
   const am = a0 + sweep * pct;
   const [mx0, my0] = polar(cx, cy, 86, am), [mx1, my1] = polar(cx, cy, 114, am);
   s += `<line x1="${mx0.toFixed(1)}" y1="${my0.toFixed(1)}" x2="${mx1.toFixed(1)}" y2="${my1.toFixed(1)}" stroke="#e5534b" stroke-width="5" stroke-linecap="round"/>`;
-  svg.innerHTML = `<defs><linearGradient id="gg" gradientUnits="userSpaceOnUse" x1="20" y1="220" x2="220" y2="20"><stop offset="0" stop-color="#9c7a22"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#f6e09a"/></linearGradient></defs>` + s;
+  svg.innerHTML = `<defs><linearGradient id="gg" gradientUnits="userSpaceOnUse" x1="20" y1="220" x2="220" y2="20"><stop offset="0" style="stop-color:var(--gold-lo)"/><stop offset=".5" style="stop-color:var(--gold)"/><stop offset="1" style="stop-color:var(--gold-hi)"/></linearGradient></defs>` + s;
 }
 
 function drawHealthGauge(svg, score) {
@@ -950,22 +1138,27 @@ function drawHealthGauge(svg, score) {
   s += `<polygon points="${nx.toFixed(1)},${ny.toFixed(1)} ${bx1.toFixed(1)},${by1.toFixed(1)} ${bx2.toFixed(1)},${by2.toFixed(1)}" fill="url(#hg)"/>`;
   s += `<circle cx="${cx}" cy="${cy}" r="15" fill="var(--surface-3)" stroke="url(#hg)" stroke-width="3"/>`;
   s += `<circle cx="${cx}" cy="${cy}" r="5" fill="url(#hg)"/>`;
-  svg.innerHTML = `<defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="100" y1="40" x2="160" y2="150"><stop offset="0" stop-color="#f6e09a"/><stop offset="1" stop-color="#b08a2c"/></linearGradient></defs>` + s;
+  svg.innerHTML = `<defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="100" y1="40" x2="160" y2="150"><stop offset="0" style="stop-color:var(--gold-hi)"/><stop offset="1" style="stop-color:var(--gold-lo)"/></linearGradient></defs>` + s;
 }
 
 /* ===================================================================
    ANALYSIS
    =================================================================== */
-function catColorMap(entries) { const m = {}; entries.forEach(([c], i) => m[c] = PALETTE[i % PALETTE.length]); return m; }
+function catColorMap(entries) {
+  const acc = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || PALETTE[0];
+  const pal = [acc].concat(PALETTE.slice(1));
+  const m = {}; entries.forEach(([c], i) => m[c] = pal[i % pal.length]); return m;
+}
 
 function renderAnalysis() {
   const d = state.data; if (!d) return;
   const type = state.ana;
-  const data = d.byCat[type] || {};
+  let data = d.byCat[type] || {};
+  if (state.day) { data = {}; dayTx(state.day).filter(t => t.type === type).forEach(t => data[t.category] = (data[t.category] || 0) + t.amount); }
   const entries = Object.entries(data).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]);
   const total = entries.reduce((s, e) => s + e[1], 0);
   const colors = catColorMap(entries);
-  $('d-lbl').textContent = type === 'exp' ? 'ค่าใช้จ่าย' : 'รายรับ';
+  $('d-lbl').textContent = (type === 'exp' ? 'ค่าใช้จ่าย' : 'รายรับ') + (state.day ? ' ' + Number(state.day.slice(8)) + ' ' + TH_MON_S[Number(state.day.slice(5, 7)) - 1] : '');
   $('d-total').textContent = '฿' + fmt(total);
   $('ana-count').textContent = entries.length ? entries.length + ' หมวด' : '';
 
@@ -1011,7 +1204,8 @@ function renderAnalysis() {
       </div>
       <div class="cat-pct">${fmt(p, 1)}%</div>
     </div>`;
-  }).join('') : emptyBox(type === 'exp' ? 'ยังไม่มีค่าใช้จ่ายในเดือนนี้' : 'ยังไม่มีรายรับในเดือนนี้', '📊');
+  }).join('')
+  : emptyBox((type === 'exp' ? 'ยังไม่มีค่าใช้จ่าย' : 'ยังไม่มีรายรับ') + (state.day ? 'ในวันนี้' : 'ในเดือนนี้'), '📊');
 
   renderBars();
 }
@@ -1025,13 +1219,15 @@ function renderBars() {
   const bw = (W - pl - pr) / n;
   const col = type === 'exp' ? 'url(#bg-exp)' : 'url(#bg-inc)';
   let s = `<defs>
-    <linearGradient id="bg-exp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e09a"/><stop offset="1" stop-color="#9c7a22"/></linearGradient>
+    <linearGradient id="bg-exp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gold-hi)"/><stop offset="1" style="stop-color:var(--gold-lo)"/></linearGradient>
     <linearGradient id="bg-inc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ff0c4"/><stop offset="1" stop-color="#2f9c6e"/></linearGradient></defs>`;
   s += `<line x1="${pl}" x2="${W - pr}" y1="${H - pb}" y2="${H - pb}" stroke="var(--line-soft)"/>`;
   vals.forEach((v, i) => {
     const h = v / max * (H - pt - pb);
     const x = pl + i * bw + bw * 0.18;
     const over = budget && v > budget;
+    const selDay = state.day && Number(state.day.slice(8)) === i + 1;
+    if (selDay) s += `<rect x="${(pl + i * bw).toFixed(1)}" y="${pt - 6}" width="${bw.toFixed(1)}" height="${H - pb - pt + 6}" rx="3" fill="rgba(var(--acc-rgb),.16)" stroke="var(--gold)" stroke-width=".8"/>`;
     s += `<rect x="${x.toFixed(1)}" y="${(H - pb - h).toFixed(1)}" width="${(bw * 0.64).toFixed(1)}" height="${Math.max(h, v > 0 ? 2 : 0).toFixed(1)}" rx="2" fill="${over ? 'var(--exp)' : col}"/>`;
     if ((i + 1) === 1 || (i + 1) % 5 === 0) s += `<text x="${(x + bw * 0.32).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="10" font-family="Prompt" fill="var(--muted)">${i + 1}</text>`;
   });
@@ -1063,7 +1259,7 @@ function emptyBox(text, ic) { return `<div class="empty"><span class="ic">${ic |
 
 function renderList() {
   const d = state.data; if (!d) return;
-  const tx = d.tx.filter(t => state.flt === 'all' || t.type === state.flt);
+  const tx = d.tx.filter(t => (state.flt === 'all' || t.type === state.flt) && (!state.day || t.date.slice(0, 10) === state.day));
   if (!tx.length) { $('tx-groups').innerHTML = `<div class="card" style="margin-top:12px">${emptyBox('ไม่มีรายการ', '🧾')}</div>`; return; }
   const groups = {};
   tx.forEach(t => (groups[t.date.slice(0, 10)] = groups[t.date.slice(0, 10)] || []).push(t));
@@ -1303,18 +1499,18 @@ const Demo = (() => {
    =================================================================== */
 const COIN_FACE = `<svg viewBox="0 0 200 200">
   <defs>
-    <radialGradient id="cf1" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#fff3c4"/><stop offset=".35" stop-color="#f0cf6a"/><stop offset=".75" stop-color="#c99a2e"/><stop offset="1" stop-color="#8a6618"/></radialGradient>
-    <linearGradient id="cf2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a87f20"/><stop offset=".5" stop-color="#f6dc8a"/><stop offset="1" stop-color="#8a6618"/></linearGradient>
-    <radialGradient id="cf3" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".6" stop-color="#dcb24a"/><stop offset="1" stop-color="#a77d22"/></radialGradient>
+    <radialGradient id="cf1" cx="35%" cy="30%" r="80%"><stop offset="0" style="stop-color:var(--c-hl)"/><stop offset=".35" style="stop-color:var(--c-1)"/><stop offset=".75" style="stop-color:var(--c-2)"/><stop offset="1" style="stop-color:var(--c-3)"/></radialGradient>
+    <linearGradient id="cf2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--c-2)"/><stop offset=".5" style="stop-color:var(--c-4)"/><stop offset="1" style="stop-color:var(--c-3)"/></linearGradient>
+    <radialGradient id="cf3" cx="40%" cy="35%" r="75%"><stop offset="0" style="stop-color:var(--c-4)"/><stop offset=".6" style="stop-color:var(--c-5)"/><stop offset="1" style="stop-color:var(--c-2)"/></radialGradient>
   </defs>
   <circle cx="100" cy="100" r="98" fill="url(#cf2)"/>
   <circle cx="100" cy="100" r="90" fill="url(#cf1)"/>
-  <circle cx="100" cy="100" r="80" fill="none" stroke="#9c7a22" stroke-width="1.5" stroke-dasharray="2 5" opacity=".8"/>
-  <circle cx="100" cy="100" r="70" fill="url(#cf3)" stroke="#b08a2c" stroke-width="2"/>
-  <circle cx="100" cy="100" r="70" fill="none" stroke="#fff3c4" stroke-width="1" opacity=".5" transform="translate(-1 -1)"/>
-  <text x="100" y="128" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="82" fill="#8a6618" opacity=".55" transform="translate(2 2)">฿</text>
-  <text x="100" y="128" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="82" fill="#fff0b8">฿</text>
-  <path d="M40 62 A70 70 0 0 1 120 32" stroke="#fffbe6" stroke-width="5" fill="none" stroke-linecap="round" opacity=".45"/>
+  <circle cx="100" cy="100" r="80" fill="none" style="stroke:var(--c-3)" stroke-width="1.5" stroke-dasharray="2 5" opacity=".8"/>
+  <circle cx="100" cy="100" r="70" fill="url(#cf3)" style="stroke:var(--c-2)" stroke-width="2"/>
+  <circle cx="100" cy="100" r="70" fill="none" style="stroke:var(--c-hl)" stroke-width="1" opacity=".5" transform="translate(-1 -1)"/>
+  <text x="100" y="128" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="82" style="fill:var(--c-3)" opacity=".55" transform="translate(2 2)">฿</text>
+  <text x="100" y="128" text-anchor="middle" font-family="Prompt, sans-serif" font-weight="700" font-size="82" style="fill:var(--c-sym)">฿</text>
+  <path d="M40 62 A70 70 0 0 1 120 32" style="stroke:var(--c-hl)" stroke-width="5" fill="none" stroke-linecap="round" opacity=".45"/>
 </svg>`;
 
 function buildCoin() {
@@ -1364,16 +1560,124 @@ function initSlider() {
   sl.addEventListener('click', e => { if (e.target === sl) done(); });
   sl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); done(); } });
 }
+let coinBuilt = false, sliderReady = false;
+function showSplash() {
+  if (!coinBuilt) { buildCoin(); coinBuilt = true; }
+  if (!sliderReady) { initSlider(); sliderReady = true; }
+  pickSplashQuote();
+  $('slider').classList.remove('anim');
+  $('slider-thumb').style.transform = ''; $('slider-fill').style.width = '';
+  const sp = $('splash'); sp.style.display = 'flex';
+  void sp.offsetWidth; sp.classList.remove('hide');
+  splash.open = true;
+}
 function spStatus(t) { $('sp-status').textContent = t || ''; }
 
 $('show-splash').checked = store.get('splash', true);
 $('show-splash').onchange = e => store.set('splash', e.target.checked);
 
 /* ===================================================================
+   CALENDAR (เลือกวัน / เดือน)
+   =================================================================== */
+const cal = { ym: null };
+function openCal() {
+  if (!state.ym) return;
+  cal.ym = state.day ? state.day.slice(0, 7) : state.ym;
+  renderCal();
+  $('cal-pop').classList.add('show');
+}
+function closeCal() { $('cal-pop').classList.remove('show'); }
+$('cal-pop').onclick = e => { if (e.target.id === 'cal-pop') closeCal(); };
+$('cal-prev').onclick = () => { cal.ym = shiftYm(cal.ym, -1); renderCal(); };
+$('cal-next').onclick = () => { cal.ym = shiftYm(cal.ym, 1); renderCal(); };
+$('cal-today').onclick = () => { closeCal(); setDay(state.data ? state.data.todayKey : todayStr()); };
+$('cal-month').onclick = () => { closeCal(); state.day = null; if (cal.ym !== state.ym) load(cal.ym); else renderAll(); };
+function renderCal() {
+  const [y, m] = cal.ym.split('-').map(Number);
+  const todayKey = state.data ? state.data.todayKey : todayStr();
+  $('cal-title').textContent = TH_MONTH[m - 1] + ' ' + (y + 543);
+  $('cal-next').disabled = cal.ym >= todayKey.slice(0, 7);
+  $('cal-month').textContent = 'ดูทั้งเดือน ' + TH_MON_S[m - 1];
+  const first = new Date(y, m - 1, 1).getDay(), dim = new Date(y, m, 0).getDate();
+  const daily = state.data && state.data.ym === cal.ym ? state.data.daily : {};
+  let h = '';
+  for (let i = 0; i < first; i++) h += '<span></span>';
+  for (let d = 1; d <= dim; d++) {
+    const key = cal.ym + '-' + String(d).padStart(2, '0');
+    const has = daily[d] && (daily[d].exp > 0 || daily[d].inc > 0);
+    const cls = [key === todayKey ? 'today' : '', key === state.day ? 'sel' : ''].join(' ');
+    h += `<button class="${cls}" data-key="${key}" ${key > todayKey ? 'disabled' : ''}>${d}${has ? '<i></i>' : ''}</button>`;
+  }
+  $('cal-grid').innerHTML = h;
+  $('cal-grid').querySelectorAll('button').forEach(b => b.onclick = () => { closeCal(); setDay(b.dataset.key); });
+}
+
+/* ===================================================================
+   QUOTES (คำคมหน้าแรก) — จำไว้ในเครื่อง
+   =================================================================== */
+const QUOTES = [
+  { en: 'Discipline is the bridge between goals and accomplishment.', th: 'วินัยคือสะพานระหว่างเป้าหมายและความสำเร็จ', by: 'Jim Rohn' },
+  { en: 'Do not save what is left after spending, but spend what is left after saving.', th: 'อย่าเก็บเงินที่เหลือจากการใช้ แต่จงใช้เงินที่เหลือจากการเก็บ', by: 'Warren Buffett' },
+  { en: 'Beware of little expenses; a small leak will sink a great ship.', th: 'ระวังรายจ่ายเล็กๆ น้อยๆ รูรั่วเพียงนิดก็ทำให้เรือใหญ่จมได้', by: 'Benjamin Franklin' },
+  { en: 'A budget is telling your money where to go instead of wondering where it went.', th: 'งบประมาณคือการบอกเงินว่าต้องไปไหน แทนการมานั่งสงสัยว่ามันหายไปไหน', by: 'Dave Ramsey' },
+  { en: 'It’s not how much money you make, but how much money you keep.', th: 'สำคัญไม่ใช่ว่าหาเงินได้เท่าไร แต่คือเก็บเงินไว้ได้เท่าไร', by: 'Robert Kiyosaki' },
+  { en: 'An investment in knowledge pays the best interest.', th: 'การลงทุนในความรู้ ให้ดอกเบี้ยดีที่สุด', by: 'Benjamin Franklin' },
+  { en: 'Little by little, a little becomes a lot.', th: 'น้ำซึมบ่อทราย — ทีละน้อย สะสมจนกลายเป็นมาก', by: 'สุภาษิต' },
+  { en: 'Small daily improvements over time lead to stunning results.', th: 'การพัฒนาเล็กๆ ทุกวัน เมื่อเวลาผ่านไปจะให้ผลลัพธ์ที่น่าทึ่ง', by: 'Robin Sharma' }
+];
+function quoteCfg() { return Object.assign({ random: false, idx: 0, custom: null }, store.get('quote', {})); }
+function quoteAt(i, cfg) { return i === -1 && cfg.custom ? cfg.custom : QUOTES[Math.max(0, i) % QUOTES.length]; }
+function quotePool(cfg) { return QUOTES.map((_, i) => i).concat(cfg.custom ? [-1] : []); }
+let shownQuote = 0;
+function showQuote(q) {
+  $('sq-en').textContent = q.en || q.th || '';
+  $('sq-th').textContent = q.en ? (q.th || '') : '';
+  $('sq-th').style.display = $('sq-th').textContent ? '' : 'none';
+  $('sq-by').textContent = q.by ? '— ' + q.by : '';
+  $('sq-by').style.display = q.by ? '' : 'none';
+}
+function pickSplashQuote() {
+  const cfg = quoteCfg(), pool = quotePool(cfg);
+  shownQuote = cfg.random ? pool[Math.floor(Math.random() * pool.length)] : cfg.idx;
+  showQuote(quoteAt(shownQuote, cfg));
+}
+$('sp-quote').onclick = () => {   // แตะคำคมบนหน้าแรก = ดูคำคมถัดไป
+  const cfg = quoteCfg(), pool = quotePool(cfg);
+  shownQuote = pool[(pool.indexOf(shownQuote) + 1) % pool.length];
+  const el = $('sp-quote'); el.style.transition = 'opacity .2s'; el.style.opacity = 0;
+  setTimeout(() => { showQuote(quoteAt(shownQuote, cfg)); el.style.opacity = 1; }, 200);
+};
+function renderQuoteList() {
+  const cfg = quoteCfg();
+  $('q-random').checked = cfg.random;
+  const items = QUOTES.map((q, i) => ({ q, i })).concat(cfg.custom ? [{ q: cfg.custom, i: -1 }] : []);
+  $('q-list').innerHTML = items.map(({ q, i }) => {
+    const by = [q.by, i === -1 ? 'ของฉัน' : ''].filter(Boolean).join(' · ');
+    return `<button class="q-item ${!cfg.random && cfg.idx === i ? 'on' : ''}" data-i="${i}">
+      <span class="check">✓</span>
+      <span><div class="q-en">${esc(q.en || q.th)}</div>${q.en && q.th ? `<div class="q-th">${esc(q.th)}</div>` : ''}${by ? `<div class="q-by">— ${esc(by)}</div>` : ''}</span>
+    </button>`;
+  }).join('');
+  $('q-list').querySelectorAll('.q-item').forEach(b => b.onclick = () => {
+    const c = quoteCfg(); c.idx = Number(b.dataset.i); c.random = false; store.set('quote', c);
+    renderQuoteList(); toast('ตั้งเป็นคำคมหน้าแรกแล้ว');
+  });
+  if (cfg.custom) { $('q-en').value = cfg.custom.en || ''; $('q-th').value = cfg.custom.th || ''; $('q-by').value = cfg.custom.by || ''; }
+}
+$('q-random').onchange = e => { const c = quoteCfg(); c.random = e.target.checked; store.set('quote', c); renderQuoteList(); toast(c.random ? 'จะสุ่มคำคมทุกครั้งที่เปิดแอป' : 'ใช้คำคมที่เลือกไว้'); };
+function saveCustomQuote() {
+  const en = $('q-en').value.trim(), th = $('q-th').value.trim(), by = $('q-by').value.trim();
+  if (!en && !th) { toast('กรุณาพิมพ์คำคม', true); return; }
+  const c = quoteCfg(); c.custom = { en: en || th, th: en ? th : '', by }; c.idx = -1; c.random = false;
+  store.set('quote', c); renderQuoteList(); toast('ใช้คำคมของคุณแล้ว ✨');
+}
+renderQuoteList();
+
+/* ===================================================================
    START
    =================================================================== */
 applyTheme(store.get('theme', 'navy'));
-if (store.get('splash', true)) { splash.open = true; buildCoin(); initSlider(); }
+if (store.get('splash', true)) showSplash();
 else $('splash').style.display = 'none';
 (async () => {
   if (!LIVE) { $('demo-tag').innerHTML = '<span class="tag-demo">DEMO</span>'; load('', splash.open); return; }
