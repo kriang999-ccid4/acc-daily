@@ -546,6 +546,25 @@
       box-shadow: var(--shadow); transition: transform .3s ease; max-width: 90vw; text-align: center;
     }
     .toast.show { transform: translate(-50%, 0); }
+    .toast .undo { margin-left: 12px; border: 0; border-radius: 999px; padding: 5px 14px; background: var(--gold-grad); color: var(--on-acc); font-family: "Prompt"; font-weight: 600; font-size: 13px; }
+    .toast.has-undo { display: flex; align-items: center; text-align: left; white-space: nowrap; padding: 8px 8px 8px 16px; }
+    .toast .undo { white-space: nowrap; flex: none; }
+
+    /* ===== ล้างประวัติ / ถังขยะ ===== */
+    .list-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 2px; }
+    .list-tools button { height: 42px; border-radius: 13px; border: 1px solid var(--line-soft); background: rgba(0,0,0,.18); font-family: "Prompt"; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .list-tools button:active { background: rgba(var(--acc-rgb),.15); }
+    .list-tools .badge { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--gold-grad); color: var(--on-acc); font-size: 11.5px; font-weight: 600; display: inline-grid; place-items: center; }
+    .clear-opt { width: 100%; text-align: left; border: 1px solid var(--line-soft); background: rgba(0,0,0,.18); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 12px; align-items: center; }
+    .clear-opt b { display: block; font-family: "Prompt"; font-weight: 500; font-size: 15px; }
+    .clear-opt small { color: var(--muted); font-size: 12.5px; }
+    .clear-opt .ic { font-size: 22px; }
+    .clear-opt.danger { border-color: rgba(229,83,75,.55); }
+    .trash-group { border: 1px solid var(--line-soft); border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
+    .trash-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; background: rgba(var(--acc-rgb),.08); font-family: "Prompt"; font-size: 12.5px; color: var(--muted); }
+    .trash-head button, .tx .rs { border: 1px solid var(--gold); background: transparent; color: var(--gold-hi); border-radius: 999px; padding: 4px 11px; font-family: "Prompt"; font-size: 12px; white-space: nowrap; }
+    .trash-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .trash-foot button { height: 46px; border-radius: 13px; font-family: "Prompt"; font-size: 14px; margin: 0; }
     .toast.err { border-color: var(--danger); }
 
     .loader { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); font-family: "Prompt"; }
@@ -693,9 +712,13 @@
         <button data-flt="exp">รายจ่าย</button>
         <button data-flt="inc">รายรับ</button>
       </div>
+      <div class="list-tools">
+        <button onclick="openClear()">🧹 ล้างประวัติ</button>
+        <button onclick="openTrash()">♻️ ถังขยะ <span class="badge" id="trash-badge" style="display:none">0</span></button>
+      </div>
       <div id="list-chip" style="margin-top:10px"></div>
       <div id="tx-groups"></div>
-      <p class="muted" style="text-align:center;font-size:12px;margin:14px 0">แตะที่รายการเพื่อลบ</p>
+      <p class="muted" style="text-align:center;font-size:12px;margin:14px 0">แตะที่รายการเพื่อลบ · รายการที่ลบอยู่ใน ♻️ ถังขยะ เรียกคืนได้</p>
     </section>
 
     <!-- ============ SETTINGS ============ -->
@@ -802,7 +825,34 @@
 </div>
 
 <!-- ============ ADD SHEET ============ -->
-<div class="overlay" id="overlay" onclick="closeAdd()"></div>
+<div class="overlay" id="overlay" onclick="closeAdd(); closeTrash()"></div>
+<!-- ============ TRASH SHEET ============ -->
+<div class="sheet" id="trash-sheet">
+  <div class="grabber"></div>
+  <div class="sheet-head">
+    <h3 class="prompt">♻️ ถังขยะ</h3>
+    <button class="x-btn" onclick="closeTrash()">×</button>
+  </div>
+  <p class="muted" style="font-size:12.5px;margin:-4px 0 12px">รายการที่ลบหรือล้างประวัติจะอยู่ที่นี่ แตะ “เรียกคืน” เพื่อนำกลับมา</p>
+  <div id="trash-list"></div>
+  <div class="trash-foot" id="trash-foot">
+    <button class="btn-ghost" style="color:var(--exp);border-color:rgba(229,83,75,.5)" onclick="emptyTrash()">ลบถาวรทั้งหมด</button>
+    <button class="btn-gold" onclick="restoreTrash({all:true}, 'เรียกคืนทั้งหมดแล้ว')">เรียกคืนทั้งหมด</button>
+  </div>
+</div>
+
+<!-- ============ CLEAR MODAL ============ -->
+<div class="modal" id="clear-modal">
+  <div class="card lux modal-box" style="text-align:left">
+    <div style="font-size:32px;text-align:center">🧹</div>
+    <h3 class="prompt" style="text-align:center">ล้างประวัติการบันทึก</h3>
+    <p style="text-align:center">รายการจะถูกย้ายไป ♻️ ถังขยะ เรียกคืนได้ภายหลัง</p>
+    <button class="clear-opt" id="clear-month"><span class="ic">📅</span><span><b id="clear-month-t">ล้างเดือนนี้</b><small id="clear-month-d"></small></span></button>
+    <button class="clear-opt danger" id="clear-all"><span class="ic">🗂️</span><span><b>ล้างทั้งหมด</b><small>ทุกเดือน เฉพาะรายการของบัญชีคุณ</small></span></button>
+    <button class="btn-ghost" style="width:100%;height:46px;border-radius:13px;font-family:Prompt;font-size:15px" onclick="$('clear-modal').classList.remove('show')">ยกเลิก</button>
+  </div>
+</div>
+
 <div class="sheet" id="sheet">
   <div class="grabber"></div>
   <div class="sheet-head">
@@ -952,6 +1002,14 @@ function toast(msg, err) {
   const t = $('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast' + (err ? ' err' : ''), 2600);
 }
+/* toast พร้อมปุ่ม "เรียกคืน" (ใช้หลังลบ) */
+function toastUndo(msg, batch) {
+  const t = $('toast');
+  t.innerHTML = `<span>${esc(msg)}</span><button class="undo">↩ เรียกคืน</button>`;
+  t.className = 'toast show has-undo';
+  t.querySelector('.undo').onclick = () => { t.className = 'toast'; restoreTrash({ batch }, 'เรียกคืนแล้ว'); };
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast has-undo', 7000);
+}
 function loading(on, text) { $('loader').classList.toggle('show', !!on); if (text) $('loader-text').textContent = text; }
 function errMsg(e) { return (e && e.message ? e.message : String(e)).replace(/^Error:\s*/, ''); }
 
@@ -1020,6 +1078,7 @@ async function load(ym, silent) {
       if (store.get('theme', null) === null && THEMES[d.settings.theme] && d.settings.theme !== document.documentElement.dataset.theme) applyTheme(d.settings.theme);
     }
     renderAll();
+    if (!state.trashChecked) { state.trashChecked = true; refreshTrashBadge(); }
   } catch (e) {
     toast('โหลดข้อมูลไม่สำเร็จ: ' + errMsg(e), true);
   } finally { loading(false); }
@@ -1296,9 +1355,9 @@ function renderList() {
 
 function bindTxClicks(root) {
   root.querySelectorAll('.tx.clickable').forEach(el => el.onclick = () => {
-    confirmModal('ลบรายการนี้?', el.dataset.desc + '<br><small>การลบจะลบแถวนี้ออกจาก Google Sheet</small>', async () => {
+    confirmModal('ลบรายการนี้?', el.dataset.desc + '<br><small>รายการจะย้ายไป ♻️ ถังขยะ เรียกคืนได้</small>', async () => {
       loading(true, 'กำลังลบ...');
-      try { await run('deleteTransaction', Number(el.dataset.row), Number(el.dataset.amt)); toast('ลบรายการแล้ว'); await load(state.ym, true); }
+      try { const r = await run('deleteTransaction', Number(el.dataset.row), Number(el.dataset.amt)); await load(state.ym, true); toastUndo('ลบรายการแล้ว', r && r.batch); refreshTrashBadge(); }
       catch (e) { toast(errMsg(e), true); }
       finally { loading(false); }
     });
@@ -1469,7 +1528,8 @@ function showGate(kind, info) {
    DEMO MODE (ยังไม่ได้ใส่ API_URL หรือเปิดด้วย ?demo=1)
    =================================================================== */
 const Demo = (() => {
-  let rows = [], settings = { dailyBudget: 300, theme: store.get('theme', 'navy') }, seq = 1;
+  let rows = [], settings = { dailyBudget: 300, theme: store.get('theme', 'navy') }, seq = 1, trash = [], tseq = 1;
+  const trashIt = (list, b) => { const at = new Date(); const k = at.getFullYear() + '-' + String(at.getMonth() + 1).padStart(2, '0') + '-' + String(at.getDate()).padStart(2, '0') + 'T' + String(at.getHours()).padStart(2, '0') + ':' + String(at.getMinutes()).padStart(2, '0'); list.forEach(r => trash.push(Object.assign({}, r, { trow: ++tseq, deletedAt: k, batch: b, orig: r }))); };
   const now = new Date();
   const pad = n => String(n).padStart(2, '0');
   const rnd = (a, b) => Math.round(a + Math.random() * (b - a));
@@ -1509,7 +1569,11 @@ const Demo = (() => {
       return { ym, todayKey: tk, isCurrentMonth: cur, dayOfMonth: cur ? +tk.slice(8) : dim, daysInMonth: dim, month, today, allBalance: all.income - all.expense, byCat, daily, tx, settings: Object.assign({}, settings) };
     },
     saveData(d) { rows.push({ row: ++seq, date: (d.date || todayStr()) + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes()), type: d.type === 'รายรับ' ? 'inc' : 'exp', category: d.category, amount: +d.amount, note: d.note, user: d.user }); return 'บันทึกสำเร็จ!'; },
-    deleteTransaction(row) { rows = rows.filter(r => r.row !== row); return 'ok'; },
+    deleteTransaction(row) { const b = 'B' + Date.now(); trashIt(rows.filter(r => r.row === row), b); rows = rows.filter(r => r.row !== row); return { batch: b, count: 1 }; },
+    clearHistory(scope) { const hit = rows.filter(r => scope === 'all' || r.date.slice(0, 7) === scope); const b = 'B' + Date.now(); trashIt(hit, b); rows = rows.filter(r => !hit.includes(r)); return { batch: hit.length ? b : null, count: hit.length }; },
+    getTrash() { return trash.slice().sort((a, b) => a.deletedAt < b.deletedAt ? 1 : -1); },
+    restoreTrash(sel) { const hit = trash.filter(t => sel.all || t.batch === sel.batch || (sel.trows || []).includes(t.trow)); hit.forEach(t => rows.push(Object.assign({}, t.orig))); trash = trash.filter(t => !hit.includes(t)); return { count: hit.length }; },
+    emptyTrash() { const n = trash.length; trash = []; return { count: n }; },
     saveSettings(p) { Object.assign(settings, p); return settings; },
     analyzeReceipt() { return { amount: 185, type: 'รายจ่าย', category: '🍴 อาหาร', note: 'กาแฟพันธุ์ไทย (ตัวอย่าง)', date: todayStr() }; }
   };
@@ -1596,6 +1660,86 @@ function spStatus(t) { $('sp-status').textContent = t || ''; }
 
 $('show-splash').checked = store.get('splash', true);
 $('show-splash').onchange = e => store.set('splash', e.target.checked);
+
+/* ===================================================================
+   ล้างประวัติ / ถังขยะ / เรียกคืน
+   =================================================================== */
+let trashItems = [];
+function openClear() {
+  if (!state.data) return;
+  const n = state.data.tx.length, [y, m] = state.ym.split('-').map(Number);
+  $('clear-month-t').textContent = 'ล้างเดือน ' + TH_MONTH[m - 1] + ' ' + (y + 543);
+  $('clear-month-d').textContent = n ? n + ' รายการ' : 'ไม่มีรายการในเดือนนี้';
+  $('clear-month').disabled = !n; $('clear-month').style.opacity = n ? 1 : .5;
+  $('clear-modal').classList.add('show');
+}
+$('clear-modal').onclick = e => { if (e.target.id === 'clear-modal') $('clear-modal').classList.remove('show'); };
+$('clear-month').onclick = () => doClear(state.ym);
+$('clear-all').onclick = () => {
+  $('clear-modal').classList.remove('show');
+  confirmModal('ล้างประวัติทั้งหมด?', 'รายการ<b>ทุกเดือน</b>ของคุณจะถูกย้ายไป ♻️ ถังขยะ<br><small>เรียกคืนได้จากถังขยะ</small>', () => doClear('all'));
+  $('modal-ok').textContent = 'ล้างทั้งหมด';
+};
+async function doClear(scope) {
+  $('clear-modal').classList.remove('show');
+  loading(true, 'กำลังล้างประวัติ...');
+  try {
+    const r = await run('clearHistory', scope);
+    await load(state.ym, true);
+    if (r && r.count) toastUndo('ล้างแล้ว ' + r.count + ' รายการ', r.batch); else toast('ไม่มีรายการให้ล้าง');
+    refreshTrashBadge();
+  } catch (e) { toast(errMsg(e), true); }
+  finally { loading(false); }
+}
+async function refreshTrashBadge() {
+  try {
+    trashItems = await run('getTrash');
+    const b = $('trash-badge'); b.textContent = trashItems.length; b.style.display = trashItems.length ? '' : 'none';
+  } catch (e) {}
+}
+async function openTrash() {
+  $('overlay').classList.add('show'); $('trash-sheet').classList.add('show');
+  $('trash-list').innerHTML = '<div class="empty"><div class="spinner" style="margin:0 auto 8px"></div>กำลังโหลด...</div>';
+  await refreshTrashBadge();
+  renderTrash();
+}
+function closeTrash() { $('trash-sheet').classList.remove('show'); if (!$('sheet').classList.contains('show')) $('overlay').classList.remove('show'); }
+function fmtDT(s) { if (!s) return ''; const [d, t] = s.split('T'); const [y, m, dd] = d.split('-').map(Number); return dd + ' ' + TH_MON_S[m - 1] + ' ' + String(y + 543).slice(-2) + ' ' + (t || ''); }
+function renderTrash() {
+  $('trash-foot').style.display = trashItems.length ? '' : 'none';
+  if (!trashItems.length) { $('trash-list').innerHTML = emptyBox('ถังขยะว่าง', '♻️'); return; }
+  const groups = [];
+  trashItems.forEach(t => { let g = groups.find(x => x.batch === t.batch); if (!g) groups.push(g = { batch: t.batch, at: t.deletedAt, items: [] }); g.items.push(t); });
+  $('trash-list').innerHTML = groups.map(g => `<div class="trash-group">
+      <div class="trash-head"><span>ลบเมื่อ ${fmtDT(g.at)} · ${g.items.length} รายการ</span>${g.items.length > 1 ? `<button data-batch="${esc(g.batch)}">↩ เรียกคืนทั้งชุด</button>` : ''}</div>
+      <div class="tx-list">${g.items.map(t => `<div class="tx">
+        <div class="emo" style="--c:${t.type === 'inc' ? 'var(--inc)' : 'var(--gold)'}">${emojiOf(t.category)}</div>
+        <div class="tx-main"><div class="tx-cat">${esc(nameOf(t.category))} <span class="tx-amt ${t.type}" style="font-size:13px">${t.type === 'inc' ? '+' : '-'}${fmt(t.amount)}</span></div><div class="tx-note">${fmtDT(t.date)}${t.note ? ' · ' + esc(t.note) : ''}</div></div>
+        <button class="rs" data-trow="${t.trow}">↩ เรียกคืน</button>
+      </div>`).join('')}</div></div>`).join('');
+  $('trash-list').querySelectorAll('[data-batch]').forEach(b => b.onclick = () => restoreTrash({ batch: b.dataset.batch }, 'เรียกคืนทั้งชุดแล้ว'));
+  $('trash-list').querySelectorAll('[data-trow]').forEach(b => b.onclick = () => restoreTrash({ trows: [Number(b.dataset.trow)] }, 'เรียกคืนแล้ว'));
+}
+async function restoreTrash(sel, msg) {
+  loading(true, 'กำลังเรียกคืน...');
+  try {
+    const r = await run('restoreTrash', sel);
+    await load(state.ym, true);
+    await refreshTrashBadge();
+    if ($('trash-sheet').classList.contains('show')) renderTrash();
+    toast(r && r.count ? '↩ ' + msg + ' (' + r.count + ' รายการ)' : 'ไม่พบรายการที่จะเรียกคืน', !(r && r.count));
+  } catch (e) { toast(errMsg(e), true); }
+  finally { loading(false); }
+}
+function emptyTrash() {
+  confirmModal('ลบถาวรทั้งหมด?', 'รายการ ' + trashItems.length + ' รายการในถังขยะจะถูกลบถาวร<br><b style="color:var(--exp)">เรียกคืนไม่ได้อีก</b>', async () => {
+    loading(true, 'กำลังลบถาวร...');
+    try { const r = await run('emptyTrash'); await refreshTrashBadge(); renderTrash(); toast('ลบถาวร ' + ((r && r.count) || 0) + ' รายการแล้ว'); }
+    catch (e) { toast(errMsg(e), true); }
+    finally { loading(false); }
+  });
+  $('modal-ok').textContent = 'ลบถาวร';
+}
 
 /* ===================================================================
    CALENDAR (เลือกวัน / เดือน)
