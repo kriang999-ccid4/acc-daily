@@ -42,7 +42,8 @@
       --gold-lo: #9c7a22;
       --acc-rgb: 212,175,55;
       --acc-hi-rgb: 246,224,154;
-      --on-acc: var(--on-acc);
+      --on-acc: #1a1204;
+      --on-acc-shadow: 0 1px 0 rgba(255,246,214,.55);
       --gold-grad: linear-gradient(135deg, #f8e7a8 0%, #d9b54a 38%, #b08a2c 70%, #f1d27a 100%);
       --gold-text: linear-gradient(180deg, #fbeab0 0%, #e2bf55 55%, #b88f2c 100%);
       --c-hl: #fff3c4; --c-1: #f0cf6a; --c-2: #c99a2e; --c-3: #8a6618; --c-4: #f6dc8a; --c-5: #dcb24a; --c-sym: #fff0b8;
@@ -67,6 +68,7 @@
       --acc-rgb: 255,90,31;
       --acc-hi-rgb: 255,176,138;
       --on-acc: #ffffff;
+      --on-acc-shadow: 0 1px 2px rgba(60,8,0,.55);
       --gold-grad: linear-gradient(135deg, #ffb27d 0%, #ff6a2b 35%, #d8300c 70%, #ff8a4c 100%);
       --gold-text: linear-gradient(180deg, #ffd6c0 0%, #ff6d33 55%, #c92d0b 100%);
       --c-hl: #ffe1d1; --c-1: #ff7a3d; --c-2: #d9360f; --c-3: #6e1505; --c-4: #ffb08a; --c-5: #ff6326; --c-sym: #fff3ec;
@@ -90,7 +92,8 @@
       --gold-lo: #8a5428;
       --acc-rgb: 201,138,78;
       --acc-hi-rgb: 240,199,156;
-      --on-acc: #241509;
+      --on-acc: #1e1006;
+      --on-acc-shadow: 0 1px 0 rgba(255,236,214,.5);
       --gold-grad: linear-gradient(135deg, #f3d0a8 0%, #cf8f52 38%, #94582a 70%, #e6b27e 100%);
       --gold-text: linear-gradient(180deg, #f8e0c6 0%, #d4975c 55%, #9a5e2e 100%);
       --c-hl: #ffe9d2; --c-1: #e0a46a; --c-2: #b0703a; --c-3: #5e3416; --c-4: #f0c79c; --c-5: #c88850; --c-sym: #fff3e6;
@@ -102,6 +105,13 @@
       --r: 20px;
       --tabbar-h: 74px;
     }
+
+    /* ตัวหนังสือบนพื้นทอง ให้อ่านชัด */
+    .btn-gold, .fab, .day-chip button, .target-pill button, .seg button.on, .cal-grid button.sel,
+    .health-row .sc, .toast .undo, .list-tools .badge, .q-item.on .check, .theme-card.on .check {
+      color: var(--on-acc) !important; text-shadow: var(--on-acc-shadow);
+    }
+    .btn-gold, .seg button.on, .day-chip button, .target-pill button, .toast .undo { font-weight: 700; }
 
     /* ===================== BASE ===================== */
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
