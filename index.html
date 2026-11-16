@@ -583,6 +583,28 @@
     .trash-head button, .tx .rs { border: 1px solid var(--gold); background: transparent; color: var(--gold-hi); border-radius: 999px; padding: 4px 11px; font-family: "Prompt"; font-size: 12px; white-space: nowrap; }
     .trash-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .trash-foot button { height: 46px; border-radius: 13px; font-family: "Prompt"; font-size: 14px; margin: 0; }
+
+    /* ===== Batch slip scan ===== */
+    .bt-prog { height: 6px; border-radius: 9px; background: var(--line-soft); overflow: hidden; margin: -2px 0 12px; }
+    .bt-prog i { display: block; height: 100%; width: 0; background: var(--gold-grad); transition: width .3s; }
+    .bt-item { border: 1px solid var(--line-soft); border-radius: 16px; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,.14); transition: opacity .2s; }
+    .bt-item.off .bt-top { opacity: .45; }
+    .bt-item.dup { border-color: rgba(229,83,75,.6); }
+    .bt-top { display: flex; gap: 10px; align-items: flex-start; }
+    .bt-thumb { width: 56px; height: 72px; border-radius: 10px; object-fit: cover; flex: none; border: 1px solid var(--line-soft); background: #000; }
+    .bt-fields { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 6px; }
+    .bt-fields .input { height: 38px; border-radius: 10px; font-size: 14px; padding: 0 10px; min-width: 0; }
+    .bt-fields input[type=date].input { font-size: 13px; padding: 0 6px; }
+    .bt-fields .full { grid-column: 1 / -1; }
+    .bt-fields select.input { appearance: none; -webkit-appearance: none; }
+    .bt-amt { font-family: "Prompt"; font-weight: 600; font-size: 16px !important; }
+    .bt-check { flex: none; width: 26px; height: 26px; accent-color: var(--gold); margin: 2px 0 0; }
+    .bt-status { font-size: 12px; color: var(--muted); margin-top: 7px; display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+    .bt-status.err { color: var(--exp); }
+    .bt-status.warn { color: #f0b24a; }
+    .bt-status button { border: 1px solid var(--gold); background: transparent; color: var(--gold-hi); border-radius: 999px; padding: 3px 10px; font-family: "Prompt"; font-size: 12px; }
+    .bt-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line-soft); border-top-color: var(--gold); animation: btspin .8s linear infinite; display: inline-block; vertical-align: -2px; margin-right: 6px; }
+    @keyframes btspin { to { transform: rotate(360deg); } }
     .toast.err { border-color: var(--danger); }
 
     .loader { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); font-family: "Prompt"; }
@@ -843,7 +865,7 @@
 </div>
 
 <!-- ============ ADD SHEET ============ -->
-<div class="overlay" id="overlay" onclick="closeAdd(); closeTrash()"></div>
+<div class="overlay" id="overlay" onclick="closeAdd(); closeTrash(); closeBatch()"></div>
 <!-- ============ TRASH SHEET ============ -->
 <div class="sheet" id="trash-sheet">
   <div class="grabber"></div>
@@ -856,6 +878,22 @@
   <div class="trash-foot" id="trash-foot">
     <button class="btn-ghost" style="color:var(--exp);border-color:rgba(229,83,75,.5)" onclick="emptyTrash()">ลบถาวรทั้งหมด</button>
     <button class="btn-gold" onclick="restoreTrash({all:true}, 'เรียกคืนทั้งหมดแล้ว')">เรียกคืนทั้งหมด</button>
+  </div>
+</div>
+
+<!-- ============ BATCH SLIP SCAN ============ -->
+<div class="sheet" id="batch-sheet">
+  <div class="grabber"></div>
+  <div class="sheet-head">
+    <h3 class="prompt">🧾 สแกนหลายสลิป</h3>
+    <button class="x-btn" onclick="closeBatch()">×</button>
+  </div>
+  <p class="muted" id="batch-sub" style="font-size:12.5px;margin:-4px 0 8px"></p>
+  <div class="bt-prog"><i id="batch-bar"></i></div>
+  <div id="batch-list"></div>
+  <div class="trash-foot">
+    <button class="btn-ghost" onclick="closeBatch()">ยกเลิก</button>
+    <button class="btn-gold" id="batch-save" onclick="saveBatch()">บันทึกทั้งหมด</button>
   </div>
 </div>
 
@@ -890,9 +928,9 @@
 
   <button class="btn-outline" id="btn-scan" onclick="document.getElementById('file').click()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
-    <span id="scan-text">สแกนสลิป / ใบเสร็จด้วย AI</span>
+    <span id="scan-text">สแกนสลิป / ใบเสร็จด้วย AI (เลือกได้หลายรูป)</span>
   </button>
-  <input type="file" id="file" accept="image/*" hidden>
+  <input type="file" id="file" accept="image/*" multiple hidden>
 
   <label class="field-label">หมวดหมู่</label>
   <div class="cat-grid" id="cat-grid"></div>
@@ -1331,7 +1369,13 @@ function renderBars() {
   if (budget) {
     const y = H - pb - budget / max * (H - pt - pb);
     s += `<line x1="${pl}" x2="${W - pr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--gold)" stroke-dasharray="4 4" stroke-width="1.2"/>`;
-    s += `<text x="${W - pr}" y="${(y - 4).toFixed(1)}" text-anchor="end" font-size="10" font-family="Prompt" fill="var(--gold)">เป้า ${fmt(budget)}</text>`;
+    // ป้ายเป้าหมาย: เป็นแคปซูลมีพื้นหลัง วางฝั่งที่แท่งกราฟเตี้ยกว่า จะได้ไม่ถูกแท่งบัง
+    const label = 'เป้า ' + fmt(budget), lw = label.length * 6.2 + 14, lh = 16;
+    const k = Math.min(9, n), leftMax = Math.max(...vals.slice(0, k)), rightMax = Math.max(...vals.slice(-k));
+    const lx = leftMax <= rightMax ? pl + 2 : W - pr - lw - 2;
+    let ly = y - lh - 3; if (ly < 0) ly = y + 3;
+    s += `<rect x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" width="${lw.toFixed(1)}" height="${lh}" rx="8" fill="var(--surface)" fill-opacity=".92" stroke="var(--gold)" stroke-width=".8"/>`;
+    s += `<text x="${(lx + lw / 2).toFixed(1)}" y="${(ly + 11.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="600" font-family="Prompt" fill="var(--gold)">${label}</text>`;
   }
   svg.innerHTML = s;
   $('bars-title').textContent = type === 'exp' ? 'ค่าใช้จ่ายรายวัน' : 'รายรับรายวัน';
@@ -1440,7 +1484,9 @@ async function submitData() {
 
 /* ---- AI receipt scan ---- */
 $('file').onchange = async e => {
-  const f = e.target.files[0]; e.target.value = '';
+  const files = [...e.target.files]; e.target.value = '';
+  if (files.length > 1) { openBatch(files); return; }
+  const f = files[0];
   if (!f) return;
   const label = $('scan-text');
   label.textContent = 'AI กำลังอ่านภาพ...'; $('btn-scan').disabled = true;
@@ -1460,9 +1506,163 @@ $('file').onchange = async e => {
   } catch (err) {
     toast(errMsg(err), true);
   } finally {
-    label.textContent = 'สแกนสลิป / ใบเสร็จด้วย AI'; $('btn-scan').disabled = false;
+    label.textContent = 'สแกนสลิป / ใบเสร็จด้วย AI (เลือกได้หลายรูป)'; $('btn-scan').disabled = false;
   }
 };
+/* ---- AI batch scan: หลายสลิปในครั้งเดียว ---- */
+const BATCH_MAX = 10;
+const batch = { items: [], run: 0, busy: false };
+function findCat(t, cat) {
+  if (!cat) return state.cats[t][0];
+  return state.cats[t].find(c => c === cat) || state.cats[t].find(c => nameOf(c) === nameOf(cat)) || state.cats[t][0];
+}
+function catOptions(t, sel) {
+  return state.cats[t].map(c => `<option value="${esc(c)}" ${c === sel ? 'selected' : ''}>${emojiOf(c)} ${esc(nameOf(c))}</option>`).join('');
+}
+function openBatch(files) {
+  if (files.length > BATCH_MAX) toast(`เลือกได้ครั้งละ ${BATCH_MAX} รูป — ใช้ ${BATCH_MAX} รูปแรก`, true);
+  batch.items.forEach(it => URL.revokeObjectURL(it.thumb));
+  batch.items = files.slice(0, BATCH_MAX).map((f, i) => ({ id: i, file: f, thumb: URL.createObjectURL(f), status: 'wait' }));
+  closeAdd();
+  $('batch-list').innerHTML = batch.items.map(it => `
+    <div class="bt-item off" id="bt-${it.id}">
+      <div class="bt-top">
+        <img class="bt-thumb" src="${it.thumb}" alt="">
+        <div class="bt-fields">
+          <select class="input bt-type" disabled><option value="exp">รายจ่าย</option><option value="inc">รายรับ</option></select>
+          <input class="input bt-amt" type="number" inputmode="decimal" placeholder="฿0" disabled>
+          <select class="input bt-cat" disabled>${catOptions('exp', state.cats.exp[0])}</select>
+          <input class="input bt-date" type="date" value="${todayStr()}" disabled>
+          <input class="input bt-note full" placeholder="บันทึก" disabled>
+        </div>
+        <input type="checkbox" class="bt-check" disabled>
+      </div>
+      <div class="bt-status"><span><span class="bt-spin"></span>รอคิว...</span></div>
+    </div>`).join('');
+  batch.items.forEach(it => {
+    const el = $('bt-' + it.id);
+    el.querySelector('.bt-type').onchange = ev => { const t = ev.target.value; el.querySelector('.bt-cat').innerHTML = catOptions(t, findCat(t)); };
+    el.querySelector('.bt-check').onchange = ev => { el.classList.toggle('off', !ev.target.checked); updateBatchUi(); };
+  });
+  $('overlay').classList.add('show'); $('batch-sheet').classList.add('show');
+  runBatch();
+}
+function closeBatch() {
+  if (!$('batch-sheet').classList.contains('show')) return;
+  if (batch.busy) return;                       // กำลังบันทึก ห้ามปิด
+  batch.run++;                                  // ยกเลิกคิวที่ค้าง
+  $('batch-sheet').classList.remove('show');
+  if (!$('sheet').classList.contains('show') && !$('trash-sheet').classList.contains('show')) $('overlay').classList.remove('show');
+}
+function setItemStatus(it, html, cls) {
+  const st = $('bt-' + it.id).querySelector('.bt-status');
+  st.className = 'bt-status' + (cls ? ' ' + cls : ''); st.innerHTML = html;
+}
+async function readItem(it, rid) {
+  it.status = 'read';
+  setItemStatus(it, '<span><span class="bt-spin"></span>AI กำลังอ่าน...</span>');
+  try {
+    const b64 = await resizeToBase64(it.file, 1400, 0.85);
+    const r = await run('analyzeReceipt', b64, 'image/jpeg');
+    if (rid !== batch.run) return;
+    const el = $('bt-' + it.id);
+    const t = r.type === 'รายรับ' ? 'inc' : 'exp';
+    el.querySelector('.bt-type').value = t;
+    el.querySelector('.bt-cat').innerHTML = catOptions(t, findCat(t, r.category));
+    if (r.amount) el.querySelector('.bt-amt').value = Number(String(r.amount).replace(/,/g, '')) || '';
+    if (r.note) el.querySelector('.bt-note').value = r.note;
+    if (r.date && /^\d{4}-\d{2}-\d{2}$/.test(r.date)) el.querySelector('.bt-date').value = r.date;
+    el.querySelectorAll('.bt-fields .input, .bt-check').forEach(x => x.disabled = false);
+    it.status = 'ok';
+    const amt = parseFloat(el.querySelector('.bt-amt').value);
+    if (!(amt > 0)) setItemStatus(it, '<span>⚠️ อ่านจำนวนเงินไม่ได้ กรอกเองได้</span>', 'warn');
+    else setItemStatus(it, '<span>✓ อ่านแล้ว ตรวจสอบก่อนบันทึก</span>');
+    el.querySelector('.bt-check').checked = true; el.classList.remove('off');
+  } catch (e) {
+    if (rid !== batch.run) return;
+    it.status = 'err';
+    const el = $('bt-' + it.id);
+    el.querySelectorAll('.bt-fields .input, .bt-check').forEach(x => x.disabled = false);
+    setItemStatus(it, `<span>✕ ${esc(errMsg(e))}</span><button>ลองใหม่</button>`, 'err');
+    el.querySelector('.bt-status button').onclick = async () => { await readItem(it, batch.run); markDuplicates(); updateBatchUi(); };
+  }
+}
+async function runBatch() {
+  const rid = ++batch.run;
+  updateBatchUi();
+  for (const it of batch.items) {
+    if (rid !== batch.run) return;
+    await readItem(it, rid);
+    updateBatchUi();
+  }
+  if (rid !== batch.run) return;
+  markDuplicates();
+  updateBatchUi();
+}
+/* เตือนสลิปที่อาจซ้ำ: ซ้ำกันเองในชุด หรือซ้ำกับรายการที่บันทึกไว้แล้ว (วันเดียวกัน + ยอดเท่ากัน) */
+function markDuplicates() {
+  const seen = new Set();
+  const saved = (state.data && state.data.tx || []).map(t => t.date.slice(0, 10) + '|' + Number(t.amount));
+  batch.items.forEach(it => {
+    if (it.status !== 'ok') return;
+    const el = $('bt-' + it.id);
+    const key = el.querySelector('.bt-date').value + '|' + Number(el.querySelector('.bt-amt').value);
+    let why = '';
+    if (seen.has(key)) why = 'อาจซ้ำกับสลิปอื่นในชุดนี้';
+    else if (saved.includes(key)) why = 'อาจซ้ำกับรายการที่บันทึกไว้แล้ว';
+    seen.add(key);
+    el.classList.toggle('dup', !!why);
+    if (why && !it.dupWarned) {
+      it.dupWarned = true;
+      el.querySelector('.bt-check').checked = false; el.classList.add('off');
+      setItemStatus(it, `<span>⚠️ ${why} — ติ๊กถูกถ้าต้องการบันทึก</span>`, 'warn');
+    }
+  });
+}
+function updateBatchUi() {
+  const n = batch.items.length;
+  const done = batch.items.filter(it => it.status === 'ok' || it.status === 'err').length;
+  const sel = batch.items.filter(it => $('bt-' + it.id).querySelector('.bt-check').checked);
+  const sum = sel.reduce((a, it) => a + (parseFloat($('bt-' + it.id).querySelector('.bt-amt').value) || 0), 0);
+  $('batch-bar').style.width = (n ? done / n * 100 : 0) + '%';
+  $('batch-sub').textContent = done < n ? `AI กำลังอ่าน ${done + 1}/${n} — แก้ไขรายการที่อ่านเสร็จได้เลย` : `อ่านครบ ${n} สลิป · เลือกไว้ ${sel.length} รายการ รวม ฿${fmt(sum)}`;
+  $('batch-save').textContent = sel.length ? `บันทึก ${sel.length} รายการ` : 'บันทึกทั้งหมด';
+  $('batch-save').disabled = !sel.length || batch.busy;
+}
+$('batch-list').addEventListener('input', e => { if (e.target.classList.contains('bt-amt')) updateBatchUi(); });
+async function saveBatch() {
+  const rows = batch.items.map(it => ({ it, el: $('bt-' + it.id) })).filter(x => x.el.querySelector('.bt-check').checked);
+  for (const { el } of rows) {
+    if (!(parseFloat(el.querySelector('.bt-amt').value) > 0)) { toast('มีรายการที่ยังไม่มีจำนวนเงิน', true); el.querySelector('.bt-amt').focus(); return; }
+  }
+  batch.busy = true; batch.run++; updateBatchUi();
+  let ok = 0, lastYm = '';
+  try {
+    for (const { it, el } of rows) {
+      $('batch-save').textContent = `กำลังบันทึก ${ok + 1}/${rows.length}...`;
+      const t = el.querySelector('.bt-type').value, date = el.querySelector('.bt-date').value;
+      try {
+        await run('saveData', {
+          amount: parseFloat(el.querySelector('.bt-amt').value), category: el.querySelector('.bt-cat').value,
+          note: el.querySelector('.bt-note').value.trim(), type: t === 'inc' ? 'รายรับ' : 'รายจ่าย',
+          date, user: state.user
+        });
+        ok++; lastYm = date.slice(0, 7);
+        el.querySelector('.bt-check').checked = false; el.classList.add('off');
+        el.querySelectorAll('.bt-fields .input, .bt-check').forEach(x => x.disabled = true);
+        setItemStatus(it, '<span>✓ บันทึกแล้ว</span>');
+      } catch (e) {
+        setItemStatus(it, `<span>✕ บันทึกไม่สำเร็จ: ${esc(errMsg(e))}</span>`, 'err');
+      }
+    }
+  } finally {
+    batch.busy = false; updateBatchUi();
+  }
+  if (ok) await load(lastYm || state.ym, true);
+  if (ok === rows.length) { closeBatch(); toast(`✓ บันทึกสำเร็จ ${ok} รายการ`); }
+  else toast(`บันทึกได้ ${ok}/${rows.length} รายการ — รายการที่เหลือลองกดบันทึกอีกครั้ง`, true);
+}
+
 function resizeToBase64(file, max, q) {
   return new Promise((resolve, reject) => {
     const img = new Image(), url = URL.createObjectURL(file);
@@ -1593,7 +1793,7 @@ const Demo = (() => {
     restoreTrash(sel) { const hit = trash.filter(t => sel.all || t.batch === sel.batch || (sel.trows || []).includes(t.trow)); hit.forEach(t => rows.push(Object.assign({}, t.orig))); trash = trash.filter(t => !hit.includes(t)); return { count: hit.length }; },
     emptyTrash() { const n = trash.length; trash = []; return { count: n }; },
     saveSettings(p) { Object.assign(settings, p); return settings; },
-    analyzeReceipt() { return { amount: 185, type: 'รายจ่าย', category: '🍴 อาหาร', note: 'กาแฟพันธุ์ไทย (ตัวอย่าง)', date: todayStr() }; }
+    analyzeReceipt() { const k = (this._k = (this._k || 0) + 1); return { amount: [185, 420, 185, 1290][(k - 1) % 4], type: 'รายจ่าย', category: '🍴 อาหาร', note: ['กาแฟพันธุ์ไทย', 'ข้าวมันไก่', 'กาแฟพันธุ์ไทย', 'ค่าน้ำมัน'][(k - 1) % 4] + ' (ตัวอย่าง)', date: todayStr() }; }
   };
 })();
 
